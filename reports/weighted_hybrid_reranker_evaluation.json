@@ -1,0 +1,2095 @@
+{
+  "evaluation_questions": 30,
+  "configuration": {
+    "rrf_k": 20,
+    "candidate_k": 20,
+    "vector_weight": 1.0,
+    "keyword_weight": 0.25,
+    "hybrid_top_k": 10,
+    "reranker_top_k": 5
+  },
+  "hybrid_metrics": {
+    "recall_at_5": 1.0,
+    "mrr": 0.888888888888889
+  },
+  "reranked_metrics": {
+    "recall_at_5": 1.0,
+    "mrr": 0.9666666666666667
+  },
+  "improvement": {
+    "recall_at_5": 0.0,
+    "mrr": 0.07777777777777772
+  },
+  "details": [
+    {
+      "question": "متى يجوز إبطال العقد للإكراه؟",
+      "expected_articles": [
+        127
+      ],
+      "hybrid_top_5": [
+        140,
+        544,
+        127,
+        144,
+        143
+      ],
+      "hybrid_reciprocal_rank": 0.3333333333333333,
+      "reranked_top_5": [
+        127,
+        128,
+        140,
+        125,
+        143
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 127,
+          "citation": "Egyptian Civil Code, Article 127",
+          "rerank_score": 0.993889331817627,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 2,
+          "article_number": 128,
+          "citation": "Egyptian Civil Code, Article 128",
+          "rerank_score": 0.9902386665344238,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 140,
+          "citation": "Egyptian Civil Code, Article 140",
+          "rerank_score": 0.9894411563873291,
+          "rrf_score": 0.05519480519480519,
+          "vector_rank": 1,
+          "keyword_rank": 13
+        },
+        {
+          "rank": 4,
+          "article_number": 125,
+          "citation": "Egyptian Civil Code, Article 125",
+          "rerank_score": 0.9105398654937744,
+          "rrf_score": 0.04195402298850574,
+          "vector_rank": 10,
+          "keyword_rank": 9
+        },
+        {
+          "rank": 5,
+          "article_number": 143,
+          "citation": "Egyptian Civil Code, Article 143",
+          "rerank_score": 0.7518219947814941,
+          "rrf_score": 0.04471153846153846,
+          "vector_rank": 6,
+          "keyword_rank": 20
+        }
+      ]
+    },
+    {
+      "question": "كيف يجب تنفيذ العقد وفقًا لما اشتمل عليه وحسن النية؟",
+      "expected_articles": [
+        148
+      ],
+      "hybrid_top_5": [
+        148,
+        144,
+        680,
+        658,
+        124
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        148,
+        124,
+        150,
+        121,
+        969
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 148,
+          "citation": "Egyptian Civil Code, Article 148",
+          "rerank_score": 0.9996747970581055,
+          "rrf_score": 0.058982683982683984,
+          "vector_rank": 1,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 2,
+          "article_number": 124,
+          "citation": "Egyptian Civil Code, Article 124",
+          "rerank_score": 0.993358314037323,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 150,
+          "citation": "Egyptian Civil Code, Article 150",
+          "rerank_score": 0.9689769744873047,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 121,
+          "citation": "Egyptian Civil Code, Article 121",
+          "rerank_score": 0.8129743337631226,
+          "rrf_score": 0.03787878787878788,
+          "vector_rank": 13,
+          "keyword_rank": 13
+        },
+        {
+          "rank": 5,
+          "article_number": 969,
+          "citation": "Egyptian Civil Code, Article 969",
+          "rerank_score": 0.7416682839393616,
+          "rrf_score": 0.037037037037037035,
+          "vector_rank": 7,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يكون العقد قابلًا للإبطال لغلط في القانون؟",
+      "expected_articles": [
+        122
+      ],
+      "hybrid_top_5": [
+        122,
+        143,
+        129,
+        140,
+        142
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        122,
+        140,
+        143,
+        144,
+        141
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 122,
+          "citation": "Egyptian Civil Code, Article 122",
+          "rerank_score": 0.9991993308067322,
+          "rrf_score": 0.05654761904761904,
+          "vector_rank": 1,
+          "keyword_rank": 8
+        },
+        {
+          "rank": 2,
+          "article_number": 140,
+          "citation": "Egyptian Civil Code, Article 140",
+          "rerank_score": 0.9929618239402771,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 143,
+          "citation": "Egyptian Civil Code, Article 143",
+          "rerank_score": 0.9736862778663635,
+          "rrf_score": 0.049888517279821624,
+          "vector_rank": 3,
+          "keyword_rank": 19
+        },
+        {
+          "rank": 4,
+          "article_number": 144,
+          "citation": "Egyptian Civil Code, Article 144",
+          "rerank_score": 0.9708634614944458,
+          "rrf_score": 0.04294871794871795,
+          "vector_rank": 10,
+          "keyword_rank": 6
+        },
+        {
+          "rank": 5,
+          "article_number": 141,
+          "citation": "Egyptian Civil Code, Article 141",
+          "rerank_score": 0.9671021103858948,
+          "rrf_score": 0.038461538461538464,
+          "vector_rank": 6,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "ما شروط الوعد بإبرام عقد معين في المستقبل؟",
+      "expected_articles": [
+        101
+      ],
+      "hybrid_top_5": [
+        101,
+        102,
+        486,
+        680,
+        678
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        101,
+        102,
+        680,
+        678,
+        490
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 101,
+          "citation": "Egyptian Civil Code, Article 101",
+          "rerank_score": 0.998291552066803,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 102,
+          "citation": "Egyptian Civil Code, Article 102",
+          "rerank_score": 0.9792200326919556,
+          "rrf_score": 0.053267045454545456,
+          "vector_rank": 2,
+          "keyword_rank": 12
+        },
+        {
+          "rank": 3,
+          "article_number": 680,
+          "citation": "Egyptian Civil Code, Article 680",
+          "rerank_score": 0.817085862159729,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 678,
+          "citation": "Egyptian Civil Code, Article 678",
+          "rerank_score": 0.5921768546104431,
+          "rrf_score": 0.043127629733520335,
+          "vector_rank": 11,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 5,
+          "article_number": 490,
+          "citation": "Egyptian Civil Code, Article 490",
+          "rerank_score": 0.24399544298648834,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يجوز للشخص أن يتعاقد باسمه لمصلحة الغير؟",
+      "expected_articles": [
+        154
+      ],
+      "hybrid_top_5": [
+        154,
+        156,
+        108,
+        153,
+        126
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        154,
+        108,
+        156,
+        153,
+        152
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 154,
+          "citation": "Egyptian Civil Code, Article 154",
+          "rerank_score": 0.9993240833282471,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 108,
+          "citation": "Egyptian Civil Code, Article 108",
+          "rerank_score": 0.9977206587791443,
+          "rrf_score": 0.05378787878787879,
+          "vector_rank": 2,
+          "keyword_rank": 10
+        },
+        {
+          "rank": 3,
+          "article_number": 156,
+          "citation": "Egyptian Civil Code, Article 156",
+          "rerank_score": 0.9951867461204529,
+          "rrf_score": 0.05434782608695652,
+          "vector_rank": 3,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 4,
+          "article_number": 153,
+          "citation": "Egyptian Civil Code, Article 153",
+          "rerank_score": 0.9476556777954102,
+          "rrf_score": 0.04807692307692308,
+          "vector_rank": 6,
+          "keyword_rank": 6
+        },
+        {
+          "rank": 5,
+          "article_number": 152,
+          "citation": "Egyptian Civil Code, Article 152",
+          "rerank_score": 0.9371709823608398,
+          "rrf_score": 0.03333333333333333,
+          "vector_rank": 10,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "كيف يتم تفسير العقد إذا كانت عبارته واضحة؟",
+      "expected_articles": [
+        150
+      ],
+      "hybrid_top_5": [
+        150,
+        89,
+        144,
+        98,
+        95
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        150,
+        144,
+        98,
+        89,
+        106
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 150,
+          "citation": "Egyptian Civil Code, Article 150",
+          "rerank_score": 0.9991451501846313,
+          "rrf_score": 0.056239737274220034,
+          "vector_rank": 1,
+          "keyword_rank": 9
+        },
+        {
+          "rank": 2,
+          "article_number": 144,
+          "citation": "Egyptian Civil Code, Article 144",
+          "rerank_score": 0.8404420018196106,
+          "rrf_score": 0.0474537037037037,
+          "vector_rank": 7,
+          "keyword_rank": 4
+        },
+        {
+          "rank": 3,
+          "article_number": 98,
+          "citation": "Egyptian Civil Code, Article 98",
+          "rerank_score": 0.5912178754806519,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 89,
+          "citation": "Egyptian Civil Code, Article 89",
+          "rerank_score": 0.5752482414245605,
+          "rrf_score": 0.053267045454545456,
+          "vector_rank": 2,
+          "keyword_rank": 12
+        },
+        {
+          "rank": 5,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.3439309298992157,
+          "rrf_score": 0.038461538461538464,
+          "vector_rank": 6,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يجوز للقاضي إبطال العقد بسبب الغبن والاستغلال؟",
+      "expected_articles": [
+        129
+      ],
+      "hybrid_top_5": [
+        129,
+        140,
+        426,
+        141,
+        149
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        129,
+        140,
+        141,
+        426,
+        149
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 129,
+          "citation": "Egyptian Civil Code, Article 129",
+          "rerank_score": 0.9950409531593323,
+          "rrf_score": 0.05848861283643892,
+          "vector_rank": 1,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 2,
+          "article_number": 140,
+          "citation": "Egyptian Civil Code, Article 140",
+          "rerank_score": 0.9094449877738953,
+          "rrf_score": 0.050831202046035806,
+          "vector_rank": 3,
+          "keyword_rank": 14
+        },
+        {
+          "rank": 3,
+          "article_number": 141,
+          "citation": "Egyptian Civil Code, Article 141",
+          "rerank_score": 0.6185341477394104,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 426,
+          "citation": "Egyptian Civil Code, Article 426",
+          "rerank_score": 0.5802386403083801,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 149,
+          "citation": "Egyptian Civil Code, Article 149",
+          "rerank_score": 0.5407137274742126,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "ماذا يحدث إذا كان مقدار المبيع ناقصًا عما ذكر في العقد؟",
+      "expected_articles": [
+        433
+      ],
+      "hybrid_top_5": [
+        433,
+        444,
+        443,
+        514,
+        442
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        433,
+        438,
+        444,
+        442,
+        514
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 433,
+          "citation": "Egyptian Civil Code, Article 433",
+          "rerank_score": 0.9985041618347168,
+          "rrf_score": 0.05735930735930736,
+          "vector_rank": 2,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 438,
+          "citation": "Egyptian Civil Code, Article 438",
+          "rerank_score": 0.9736647009849548,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 444,
+          "citation": "Egyptian Civil Code, Article 444",
+          "rerank_score": 0.8995657563209534,
+          "rrf_score": 0.05654761904761904,
+          "vector_rank": 1,
+          "keyword_rank": 8
+        },
+        {
+          "rank": 4,
+          "article_number": 442,
+          "citation": "Egyptian Civil Code, Article 442",
+          "rerank_score": 0.8199442625045776,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 514,
+          "citation": "Egyptian Civil Code, Article 514",
+          "rerank_score": 0.6745622754096985,
+          "rrf_score": 0.04560439560439561,
+          "vector_rank": 6,
+          "keyword_rank": 15
+        }
+      ]
+    },
+    {
+      "question": "متى يستحق التعويض عن الفصل بسبب مخالفة شروط العقد؟",
+      "expected_articles": [
+        696
+      ],
+      "hybrid_top_5": [
+        695,
+        696,
+        221,
+        868,
+        750
+      ],
+      "hybrid_reciprocal_rank": 0.5,
+      "reranked_top_5": [
+        696,
+        695,
+        221,
+        663,
+        750
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 696,
+          "citation": "Egyptian Civil Code, Article 696",
+          "rerank_score": 0.9970778226852417,
+          "rrf_score": 0.05587121212121212,
+          "vector_rank": 2,
+          "keyword_rank": 4
+        },
+        {
+          "rank": 2,
+          "article_number": 695,
+          "citation": "Egyptian Civil Code, Article 695",
+          "rerank_score": 0.9438197016716003,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 3,
+          "article_number": 221,
+          "citation": "Egyptian Civil Code, Article 221",
+          "rerank_score": 0.5516470670700073,
+          "rrf_score": 0.04708222811671088,
+          "vector_rank": 6,
+          "keyword_rank": 9
+        },
+        {
+          "rank": 4,
+          "article_number": 663,
+          "citation": "Egyptian Civil Code, Article 663",
+          "rerank_score": 0.3715580999851227,
+          "rrf_score": 0.03958333333333333,
+          "vector_rank": 10,
+          "keyword_rank": 20
+        },
+        {
+          "rank": 5,
+          "article_number": 750,
+          "citation": "Egyptian Civil Code, Article 750",
+          "rerank_score": 0.22388014197349548,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يصح شرط منع التصرف في المال إذا ورد في العقد؟",
+      "expected_articles": [
+        823
+      ],
+      "hybrid_top_5": [
+        823,
+        467,
+        824,
+        481,
+        1033
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        823,
+        824,
+        114,
+        270,
+        481
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 823,
+          "citation": "Egyptian Civil Code, Article 823",
+          "rerank_score": 0.999470055103302,
+          "rrf_score": 0.056239737274220034,
+          "vector_rank": 1,
+          "keyword_rank": 9
+        },
+        {
+          "rank": 2,
+          "article_number": 824,
+          "citation": "Egyptian Civil Code, Article 824",
+          "rerank_score": 0.9960913062095642,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 114,
+          "citation": "Egyptian Civil Code, Article 114",
+          "rerank_score": 0.6303017735481262,
+          "rrf_score": 0.037037037037037035,
+          "vector_rank": 7,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 270,
+          "citation": "Egyptian Civil Code, Article 270",
+          "rerank_score": 0.5162148475646973,
+          "rrf_score": 0.034482758620689655,
+          "vector_rank": 9,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 481,
+          "citation": "Egyptian Civil Code, Article 481",
+          "rerank_score": 0.46717140078544617,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يتم العقد بمجرد تبادل طرفين التعبير عن إرادتين متطابقتين؟",
+      "expected_articles": [
+        89
+      ],
+      "hybrid_top_5": [
+        89,
+        94,
+        833,
+        481,
+        129
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        89,
+        481,
+        129,
+        679,
+        94
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 89,
+          "citation": "Egyptian Civil Code, Article 89",
+          "rerank_score": 0.999634861946106,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 481,
+          "citation": "Egyptian Civil Code, Article 481",
+          "rerank_score": 0.18506304919719696,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 129,
+          "citation": "Egyptian Civil Code, Article 129",
+          "rerank_score": 0.17949825525283813,
+          "rrf_score": 0.04225806451612903,
+          "vector_rank": 11,
+          "keyword_rank": 5
+        },
+        {
+          "rank": 4,
+          "article_number": 679,
+          "citation": "Egyptian Civil Code, Article 679",
+          "rerank_score": 0.13276053965091705,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 94,
+          "citation": "Egyptian Civil Code, Article 94",
+          "rerank_score": 0.07508420944213867,
+          "rrf_score": 0.0474537037037037,
+          "vector_rank": 7,
+          "keyword_rank": 4
+        }
+      ]
+    },
+    {
+      "question": "ما هي طرق التعبير عن الإرادة في العقد؟",
+      "expected_articles": [
+        90
+      ],
+      "hybrid_top_5": [
+        89,
+        90,
+        127,
+        137,
+        502
+      ],
+      "hybrid_reciprocal_rank": 0.5,
+      "reranked_top_5": [
+        89,
+        90,
+        148,
+        729,
+        137
+      ],
+      "reranked_reciprocal_rank": 0.5,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 89,
+          "citation": "Egyptian Civil Code, Article 89",
+          "rerank_score": 0.9953540563583374,
+          "rrf_score": 0.054375804375804374,
+          "vector_rank": 1,
+          "keyword_rank": 17
+        },
+        {
+          "rank": 2,
+          "article_number": 90,
+          "citation": "Egyptian Civil Code, Article 90",
+          "rerank_score": 0.990056037902832,
+          "rrf_score": 0.05005720823798627,
+          "vector_rank": 3,
+          "keyword_rank": 18
+        },
+        {
+          "rank": 3,
+          "article_number": 148,
+          "citation": "Egyptian Civil Code, Article 148",
+          "rerank_score": 0.6373072862625122,
+          "rrf_score": 0.03333333333333333,
+          "vector_rank": 10,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 729,
+          "citation": "Egyptian Civil Code, Article 729",
+          "rerank_score": 0.5613836050033569,
+          "rrf_score": 0.038461538461538464,
+          "vector_rank": 6,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 137,
+          "citation": "Egyptian Civil Code, Article 137",
+          "rerank_score": 0.26420947909355164,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى ينتج التعبير عن الإرادة أثره؟",
+      "expected_articles": [
+        91
+      ],
+      "hybrid_top_5": [
+        91,
+        92,
+        90,
+        901,
+        1005
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        91,
+        92,
+        90,
+        270,
+        93
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 91,
+          "citation": "Egyptian Civil Code, Article 91",
+          "rerank_score": 0.9987589120864868,
+          "rrf_score": 0.058982683982683984,
+          "vector_rank": 1,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 2,
+          "article_number": 92,
+          "citation": "Egyptian Civil Code, Article 92",
+          "rerank_score": 0.9929209351539612,
+          "rrf_score": 0.05735930735930736,
+          "vector_rank": 2,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 3,
+          "article_number": 90,
+          "citation": "Egyptian Civil Code, Article 90",
+          "rerank_score": 0.6870989799499512,
+          "rrf_score": 0.05434782608695652,
+          "vector_rank": 3,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 4,
+          "article_number": 270,
+          "citation": "Egyptian Civil Code, Article 270",
+          "rerank_score": 0.5147415399551392,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 93,
+          "citation": "Egyptian Civil Code, Article 93",
+          "rerank_score": 0.007294099777936935,
+          "rrf_score": 0.034482758620689655,
+          "vector_rank": 9,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "ماذا يحدث إذا مات من صدر منه التعبير عن الإرادة أو فقد أهليته قبل أن ينتج التعبير أثره؟",
+      "expected_articles": [
+        92
+      ],
+      "hybrid_top_5": [
+        92,
+        91,
+        901,
+        911,
+        602
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        92,
+        91,
+        602,
+        911,
+        916
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 92,
+          "citation": "Egyptian Civil Code, Article 92",
+          "rerank_score": 0.9995632767677307,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 91,
+          "citation": "Egyptian Civil Code, Article 91",
+          "rerank_score": 0.7593120336532593,
+          "rrf_score": 0.0523989898989899,
+          "vector_rank": 2,
+          "keyword_rank": 16
+        },
+        {
+          "rank": 3,
+          "article_number": 602,
+          "citation": "Egyptian Civil Code, Article 602",
+          "rerank_score": 0.06139879673719406,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 911,
+          "citation": "Egyptian Civil Code, Article 911",
+          "rerank_score": 0.0370684489607811,
+          "rrf_score": 0.042261904761904764,
+          "vector_rank": 10,
+          "keyword_rank": 8
+        },
+        {
+          "rank": 5,
+          "article_number": 916,
+          "citation": "Egyptian Civil Code, Article 916",
+          "rerank_score": 0.022657738998532295,
+          "rrf_score": 0.035647716682199446,
+          "vector_rank": 17,
+          "keyword_rank": 9
+        }
+      ]
+    },
+    {
+      "question": "ما أثر تحديد ميعاد للقبول على الموجب؟",
+      "expected_articles": [
+        93
+      ],
+      "hybrid_top_5": [
+        93,
+        94,
+        381,
+        98,
+        97
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        93,
+        94,
+        97,
+        100,
+        98
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 93,
+          "citation": "Egyptian Civil Code, Article 93",
+          "rerank_score": 0.9969991445541382,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 94,
+          "citation": "Egyptian Civil Code, Article 94",
+          "rerank_score": 0.9419446587562561,
+          "rrf_score": 0.05681818181818182,
+          "vector_rank": 2,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 3,
+          "article_number": 97,
+          "citation": "Egyptian Civil Code, Article 97",
+          "rerank_score": 0.7207050323486328,
+          "rrf_score": 0.05,
+          "vector_rank": 5,
+          "keyword_rank": 5
+        },
+        {
+          "rank": 4,
+          "article_number": 100,
+          "citation": "Egyptian Civil Code, Article 100",
+          "rerank_score": 0.6267028450965881,
+          "rrf_score": 0.03974358974358974,
+          "vector_rank": 10,
+          "keyword_rank": 19
+        },
+        {
+          "rank": 5,
+          "article_number": 98,
+          "citation": "Egyptian Civil Code, Article 98",
+          "rerank_score": 0.5874632596969604,
+          "rrf_score": 0.05005720823798627,
+          "vector_rank": 3,
+          "keyword_rank": 18
+        }
+      ]
+    },
+    {
+      "question": "متى يتحلل الموجب من إيجابه إذا صدر الإيجاب في مجلس العقد؟",
+      "expected_articles": [
+        94
+      ],
+      "hybrid_top_5": [
+        94,
+        98,
+        93,
+        129,
+        494
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        94,
+        93,
+        98,
+        97,
+        129
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 94,
+          "citation": "Egyptian Civil Code, Article 94",
+          "rerank_score": 0.9991350769996643,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 93,
+          "citation": "Egyptian Civil Code, Article 93",
+          "rerank_score": 0.9265283346176147,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 98,
+          "citation": "Egyptian Civil Code, Article 98",
+          "rerank_score": 0.8156696557998657,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 97,
+          "citation": "Egyptian Civil Code, Article 97",
+          "rerank_score": 0.13442035019397736,
+          "rrf_score": 0.037037037037037035,
+          "vector_rank": 7,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 129,
+          "citation": "Egyptian Civil Code, Article 129",
+          "rerank_score": 0.06284090131521225,
+          "rrf_score": 0.043333333333333335,
+          "vector_rank": 10,
+          "keyword_rank": 5
+        }
+      ]
+    },
+    {
+      "question": "ماذا يحدث إذا اتفق الطرفان على جميع المسائل الجوهرية واحتفظا بمسائل تفصيلية للاتفاق عليها فيما بعد؟",
+      "expected_articles": [
+        95
+      ],
+      "hybrid_top_5": [
+        95,
+        101,
+        549,
+        1026,
+        952
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        95,
+        101,
+        624,
+        549,
+        952
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 95,
+          "citation": "Egyptian Civil Code, Article 95",
+          "rerank_score": 0.9997896552085876,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 101,
+          "citation": "Egyptian Civil Code, Article 101",
+          "rerank_score": 0.5583512783050537,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 624,
+          "citation": "Egyptian Civil Code, Article 624",
+          "rerank_score": 0.42506811022758484,
+          "rrf_score": 0.037037037037037035,
+          "vector_rank": 7,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 549,
+          "citation": "Egyptian Civil Code, Article 549",
+          "rerank_score": 0.14919571578502655,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 952,
+          "citation": "Egyptian Civil Code, Article 952",
+          "rerank_score": 0.022476840764284134,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "ماذا يحدث إذا اقترن القبول بما يزيد في الإيجاب أو يقيد منه أو يعدل فيه؟",
+      "expected_articles": [
+        96
+      ],
+      "hybrid_top_5": [
+        96,
+        94,
+        381,
+        98,
+        93
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        96,
+        94,
+        93,
+        98,
+        153
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 96,
+          "citation": "Egyptian Civil Code, Article 96",
+          "rerank_score": 0.9994307160377502,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 94,
+          "citation": "Egyptian Civil Code, Article 94",
+          "rerank_score": 0.9568647146224976,
+          "rrf_score": 0.05632411067193676,
+          "vector_rank": 2,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 3,
+          "article_number": 93,
+          "citation": "Egyptian Civil Code, Article 93",
+          "rerank_score": 0.7522798776626587,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 98,
+          "citation": "Egyptian Civil Code, Article 98",
+          "rerank_score": 0.24173347651958466,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 153,
+          "citation": "Egyptian Civil Code, Article 153",
+          "rerank_score": 0.06386218965053558,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يعتبر التعاقد بين الغائبين قد تم؟",
+      "expected_articles": [
+        97
+      ],
+      "hybrid_top_5": [
+        97,
+        106,
+        71,
+        69,
+        66
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        97,
+        106,
+        65,
+        58,
+        71
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 97,
+          "citation": "Egyptian Civil Code, Article 97",
+          "rerank_score": 0.9982205033302307,
+          "rrf_score": 0.058982683982683984,
+          "vector_rank": 1,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 2,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.4750618636608124,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 65,
+          "citation": "Egyptian Civil Code, Article 65",
+          "rerank_score": 0.006731388159096241,
+          "rrf_score": 0.034482758620689655,
+          "vector_rank": 9,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 58,
+          "citation": "Egyptian Civil Code, Article 58",
+          "rerank_score": 0.006731388159096241,
+          "rrf_score": 0.03333333333333333,
+          "vector_rank": 10,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 71,
+          "citation": "Egyptian Civil Code, Article 71",
+          "rerank_score": 0.0067313783802092075,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يعتبر السكوت عن الرد قبولًا؟",
+      "expected_articles": [
+        98
+      ],
+      "hybrid_top_5": [
+        98,
+        544,
+        125,
+        421,
+        316
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        98,
+        421,
+        316,
+        125,
+        322
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 98,
+          "citation": "Egyptian Civil Code, Article 98",
+          "rerank_score": 0.9938408136367798,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 421,
+          "citation": "Egyptian Civil Code, Article 421",
+          "rerank_score": 0.24487915635108948,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 316,
+          "citation": "Egyptian Civil Code, Article 316",
+          "rerank_score": 0.2309054434299469,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 125,
+          "citation": "Egyptian Civil Code, Article 125",
+          "rerank_score": 0.19128262996673584,
+          "rrf_score": 0.050595238095238096,
+          "vector_rank": 4,
+          "keyword_rank": 8
+        },
+        {
+          "rank": 5,
+          "article_number": 322,
+          "citation": "Egyptian Civil Code, Article 322",
+          "rerank_score": 0.03574072942137718,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يتم العقد في المزايدات؟",
+      "expected_articles": [
+        99
+      ],
+      "hybrid_top_5": [
+        94,
+        99,
+        1058,
+        129,
+        544
+      ],
+      "hybrid_reciprocal_rank": 0.5,
+      "reranked_top_5": [
+        99,
+        89,
+        106,
+        94,
+        129
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 99,
+          "citation": "Egyptian Civil Code, Article 99",
+          "rerank_score": 0.9958943128585815,
+          "rrf_score": 0.05023501762632197,
+          "vector_rank": 3,
+          "keyword_rank": 17
+        },
+        {
+          "rank": 2,
+          "article_number": 89,
+          "citation": "Egyptian Civil Code, Article 89",
+          "rerank_score": 0.8414700031280518,
+          "rrf_score": 0.03931451612903226,
+          "vector_rank": 12,
+          "keyword_rank": 11
+        },
+        {
+          "rank": 3,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.2909141480922699,
+          "rrf_score": 0.04344729344729344,
+          "vector_rank": 7,
+          "keyword_rank": 19
+        },
+        {
+          "rank": 4,
+          "article_number": 94,
+          "citation": "Egyptian Civil Code, Article 94",
+          "rerank_score": 0.21958796679973602,
+          "rrf_score": 0.050869565217391305,
+          "vector_rank": 5,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 5,
+          "article_number": 129,
+          "citation": "Egyptian Civil Code, Article 129",
+          "rerank_score": 0.12340863049030304,
+          "rrf_score": 0.04707792207792208,
+          "vector_rank": 8,
+          "keyword_rank": 2
+        }
+      ]
+    },
+    {
+      "question": "ما المقصود بالقبول في عقود الإذعان؟",
+      "expected_articles": [
+        100
+      ],
+      "hybrid_top_5": [
+        100,
+        149,
+        694,
+        227,
+        678
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        100,
+        149,
+        680,
+        678,
+        679
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 100,
+          "citation": "Egyptian Civil Code, Article 100",
+          "rerank_score": 0.998715877532959,
+          "rrf_score": 0.05848861283643892,
+          "vector_rank": 1,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 2,
+          "article_number": 149,
+          "citation": "Egyptian Civil Code, Article 149",
+          "rerank_score": 0.6901028156280518,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 680,
+          "citation": "Egyptian Civil Code, Article 680",
+          "rerank_score": 0.04077296704053879,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 678,
+          "citation": "Egyptian Civil Code, Article 678",
+          "rerank_score": 0.04048425331711769,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 679,
+          "citation": "Egyptian Civil Code, Article 679",
+          "rerank_score": 0.03991886228322983,
+          "rrf_score": 0.034482758620689655,
+          "vector_rank": 9,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى يقوم الحكم مقام العقد في الوعد بإبرام عقد؟",
+      "expected_articles": [
+        102
+      ],
+      "hybrid_top_5": [
+        102,
+        101,
+        223,
+        106,
+        160
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        102,
+        101,
+        106,
+        223,
+        107
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 102,
+          "citation": "Egyptian Civil Code, Article 102",
+          "rerank_score": 0.998212456703186,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 101,
+          "citation": "Egyptian Civil Code, Article 101",
+          "rerank_score": 0.9451651573181152,
+          "rrf_score": 0.05378787878787879,
+          "vector_rank": 2,
+          "keyword_rank": 10
+        },
+        {
+          "rank": 3,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.5344486832618713,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 223,
+          "citation": "Egyptian Civil Code, Article 223",
+          "rerank_score": 0.24859760701656342,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 107,
+          "citation": "Egyptian Civil Code, Article 107",
+          "rerank_score": 0.17970937490463257,
+          "rrf_score": 0.038461538461538464,
+          "vector_rank": 6,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "ما أثر دفع العربون وقت إبرام العقد؟",
+      "expected_articles": [
+        103
+      ],
+      "hybrid_top_5": [
+        103,
+        144,
+        106,
+        129,
+        563
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        103,
+        106,
+        658,
+        144,
+        695
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 103,
+          "citation": "Egyptian Civil Code, Article 103",
+          "rerank_score": 0.9958992600440979,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.7418370842933655,
+          "rrf_score": 0.049888517279821624,
+          "vector_rank": 3,
+          "keyword_rank": 19
+        },
+        {
+          "rank": 3,
+          "article_number": 658,
+          "citation": "Egyptian Civil Code, Article 658",
+          "rerank_score": 0.07288598269224167,
+          "rrf_score": 0.04117259552042161,
+          "vector_rank": 13,
+          "keyword_rank": 3
+        },
+        {
+          "rank": 4,
+          "article_number": 144,
+          "citation": "Egyptian Civil Code, Article 144",
+          "rerank_score": 0.06911622732877731,
+          "rrf_score": 0.05545454545454546,
+          "vector_rank": 2,
+          "keyword_rank": 5
+        },
+        {
+          "rank": 5,
+          "article_number": 695,
+          "citation": "Egyptian Civil Code, Article 695",
+          "rerank_score": 0.06178541108965874,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "من يكون محل الاعتبار عند النظر في عيوب الإرادة إذا تم العقد بطريق النيابة؟",
+      "expected_articles": [
+        104
+      ],
+      "hybrid_top_5": [
+        104,
+        150,
+        94,
+        107,
+        106
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        104,
+        150,
+        106,
+        107,
+        144
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 104,
+          "citation": "Egyptian Civil Code, Article 104",
+          "rerank_score": 0.9994418025016785,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 150,
+          "citation": "Egyptian Civil Code, Article 150",
+          "rerank_score": 0.9810318350791931,
+          "rrf_score": 0.049019607843137254,
+          "vector_rank": 4,
+          "keyword_rank": 14
+        },
+        {
+          "rank": 3,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.7461810111999512,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 107,
+          "citation": "Egyptian Civil Code, Article 107",
+          "rerank_score": 0.679434597492218,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 144,
+          "citation": "Egyptian Civil Code, Article 144",
+          "rerank_score": 0.24829144775867462,
+          "rrf_score": 0.04310344827586207,
+          "vector_rank": 9,
+          "keyword_rank": 9
+        }
+      ]
+    },
+    {
+      "question": "إلى من تضاف الحقوق والالتزامات الناتجة عن العقد الذي يبرمه النائب في حدود نيابته؟",
+      "expected_articles": [
+        105
+      ],
+      "hybrid_top_5": [
+        107,
+        105,
+        146,
+        104,
+        106
+      ],
+      "hybrid_reciprocal_rank": 0.5,
+      "reranked_top_5": [
+        105,
+        107,
+        146,
+        106,
+        104
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 105,
+          "citation": "Egyptian Civil Code, Article 105",
+          "rerank_score": 0.9995429515838623,
+          "rrf_score": 0.047619047619047616,
+          "vector_rank": 1,
+          "keyword_rank": null
+        },
+        {
+          "rank": 2,
+          "article_number": 107,
+          "citation": "Egyptian Civil Code, Article 107",
+          "rerank_score": 0.9852559566497803,
+          "rrf_score": 0.0523989898989899,
+          "vector_rank": 2,
+          "keyword_rank": 16
+        },
+        {
+          "rank": 3,
+          "article_number": 146,
+          "citation": "Egyptian Civil Code, Article 146",
+          "rerank_score": 0.7638663649559021,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.6929702162742615,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 104,
+          "citation": "Egyptian Civil Code, Article 104",
+          "rerank_score": 0.25423869490623474,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "متى لا يضاف أثر العقد الذي أبرمه النائب إلى الأصيل؟",
+      "expected_articles": [
+        106
+      ],
+      "hybrid_top_5": [
+        107,
+        101,
+        106,
+        104,
+        105
+      ],
+      "hybrid_reciprocal_rank": 0.3333333333333333,
+      "reranked_top_5": [
+        107,
+        106,
+        105,
+        104,
+        101
+      ],
+      "reranked_reciprocal_rank": 0.5,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 107,
+          "citation": "Egyptian Civil Code, Article 107",
+          "rerank_score": 0.9970778226852417,
+          "rrf_score": 0.05595238095238095,
+          "vector_rank": 1,
+          "keyword_rank": 10
+        },
+        {
+          "rank": 2,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.9952276945114136,
+          "rrf_score": 0.045454545454545456,
+          "vector_rank": 2,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 105,
+          "citation": "Egyptian Civil Code, Article 105",
+          "rerank_score": 0.974648654460907,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 104,
+          "citation": "Egyptian Civil Code, Article 104",
+          "rerank_score": 0.31135013699531555,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 101,
+          "citation": "Egyptian Civil Code, Article 101",
+          "rerank_score": 0.10761288553476334,
+          "rrf_score": 0.04603729603729604,
+          "vector_rank": 6,
+          "keyword_rank": 13
+        }
+      ]
+    },
+    {
+      "question": "ماذا يحدث إذا جهل النائب ومن تعاقد معه انقضاء النيابة وقت العقد؟",
+      "expected_articles": [
+        107
+      ],
+      "hybrid_top_5": [
+        107,
+        106,
+        129,
+        104,
+        479
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        107,
+        106,
+        104,
+        142,
+        126
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 107,
+          "citation": "Egyptian Civil Code, Article 107",
+          "rerank_score": 0.99937504529953,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 106,
+          "citation": "Egyptian Civil Code, Article 106",
+          "rerank_score": 0.9940405488014221,
+          "rrf_score": 0.05681818181818182,
+          "vector_rank": 2,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 3,
+          "article_number": 104,
+          "citation": "Egyptian Civil Code, Article 104",
+          "rerank_score": 0.9510315656661987,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 142,
+          "citation": "Egyptian Civil Code, Article 142",
+          "rerank_score": 0.6053780317306519,
+          "rrf_score": 0.04050925925925926,
+          "vector_rank": 12,
+          "keyword_rank": 7
+        },
+        {
+          "rank": 5,
+          "article_number": 126,
+          "citation": "Egyptian Civil Code, Article 126",
+          "rerank_score": 0.41410863399505615,
+          "rrf_score": 0.04,
+          "vector_rank": 5,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "هل يجوز للشخص أن يتعاقد مع نفسه باسم من ينوب عنه؟",
+      "expected_articles": [
+        108
+      ],
+      "hybrid_top_5": [
+        108,
+        154,
+        479,
+        950,
+        152
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        108,
+        479,
+        154,
+        950,
+        109
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 108,
+          "citation": "Egyptian Civil Code, Article 108",
+          "rerank_score": 0.9997181296348572,
+          "rrf_score": 0.05952380952380952,
+          "vector_rank": 1,
+          "keyword_rank": 1
+        },
+        {
+          "rank": 2,
+          "article_number": 479,
+          "citation": "Egyptian Civil Code, Article 479",
+          "rerank_score": 0.9975798726081848,
+          "rrf_score": 0.05240683229813664,
+          "vector_rank": 3,
+          "keyword_rank": 8
+        },
+        {
+          "rank": 3,
+          "article_number": 154,
+          "citation": "Egyptian Civil Code, Article 154",
+          "rerank_score": 0.9972482323646545,
+          "rrf_score": 0.05681818181818182,
+          "vector_rank": 2,
+          "keyword_rank": 2
+        },
+        {
+          "rank": 4,
+          "article_number": 950,
+          "citation": "Egyptian Civil Code, Article 950",
+          "rerank_score": 0.9682420492172241,
+          "rrf_score": 0.050287356321839075,
+          "vector_rank": 4,
+          "keyword_rank": 9
+        },
+        {
+          "rank": 5,
+          "article_number": 109,
+          "citation": "Egyptian Civil Code, Article 109",
+          "rerank_score": 0.9556333422660828,
+          "rrf_score": 0.038461538461538464,
+          "vector_rank": 6,
+          "keyword_rank": null
+        }
+      ]
+    },
+    {
+      "question": "من يكون أهلًا للتعاقد وفقًا للقانون المدني؟",
+      "expected_articles": [
+        109
+      ],
+      "hybrid_top_5": [
+        109,
+        19,
+        108,
+        20,
+        154
+      ],
+      "hybrid_reciprocal_rank": 1.0,
+      "reranked_top_5": [
+        109,
+        196,
+        138,
+        20,
+        108
+      ],
+      "reranked_reciprocal_rank": 1.0,
+      "reranked_results": [
+        {
+          "rank": 1,
+          "article_number": 109,
+          "citation": "Egyptian Civil Code, Article 109",
+          "rerank_score": 0.9963446259498596,
+          "rrf_score": 0.047619047619047616,
+          "vector_rank": 1,
+          "keyword_rank": null
+        },
+        {
+          "rank": 2,
+          "article_number": 196,
+          "citation": "Egyptian Civil Code, Article 196",
+          "rerank_score": 0.8775794506072998,
+          "rrf_score": 0.03571428571428571,
+          "vector_rank": 8,
+          "keyword_rank": null
+        },
+        {
+          "rank": 3,
+          "article_number": 138,
+          "citation": "Egyptian Civil Code, Article 138",
+          "rerank_score": 0.6626334190368652,
+          "rrf_score": 0.03333333333333333,
+          "vector_rank": 10,
+          "keyword_rank": null
+        },
+        {
+          "rank": 4,
+          "article_number": 20,
+          "citation": "Egyptian Civil Code, Article 20",
+          "rerank_score": 0.43432295322418213,
+          "rrf_score": 0.041666666666666664,
+          "vector_rank": 4,
+          "keyword_rank": null
+        },
+        {
+          "rank": 5,
+          "article_number": 108,
+          "citation": "Egyptian Civil Code, Article 108",
+          "rerank_score": 0.33507558703422546,
+          "rrf_score": 0.043478260869565216,
+          "vector_rank": 3,
+          "keyword_rank": null
+        }
+      ]
+    }
+  ]
+}

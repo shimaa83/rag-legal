@@ -1,0 +1,16 @@
+stages:
+  convert_pdf:
+    cmd: uv run python -m legal_rag.pdf_to_json data/raw/egyptian_civil_code.pdf data/raw/civil_code.json
+    deps:
+      - data/raw/egyptian_civil_code.pdf
+      - src/legal_rag/pdf_to_json.py
+    outs:
+      - data/raw/civil_code.json
+
+  preprocess:
+    cmd: uv run python -m legal_rag.data_preprocessing
+    deps:
+      - data/raw/civil_code.json
+      - src/legal_rag/data_preprocessing.py
+    outs:
+      - data/processed/civil_code.json

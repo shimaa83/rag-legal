@@ -1,0 +1,35 @@
+schema: '2.0'
+stages:
+  convert_pdf:
+    cmd: uv run python -m legal_rag.pdf_to_json data/raw/egyptian_civil_code.pdf
+      data/raw/civil_code.json
+    deps:
+    - path: data/raw/egyptian_civil_code.pdf
+      hash: md5
+      md5: 5086ef5f16f15d856278db943e58e948
+      size: 2599703
+    - path: src/legal_rag/pdf_to_json.py
+      hash: md5
+      md5: 34ecfc6f08d6360993ae6116f848b85a
+      size: 15460
+    outs:
+    - path: data/raw/civil_code.json
+      hash: md5
+      md5: dcf43c592988c3839162dc7fb6359d32
+      size: 1294577
+  preprocess:
+    cmd: uv run python -m legal_rag.data_preprocessing
+    deps:
+    - path: data/raw/civil_code.json
+      hash: md5
+      md5: dcf43c592988c3839162dc7fb6359d32
+      size: 1294577
+    - path: src/legal_rag/data_preprocessing.py
+      hash: md5
+      md5: f707ee3e6f6aed8dd54ddb3c6e773890
+      size: 10841
+    outs:
+    - path: data/processed/civil_code.json
+      hash: md5
+      md5: 4d1c0fae5b5d90912b2fbba4666c3c6c
+      size: 1791936

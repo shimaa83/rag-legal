@@ -1,0 +1,33 @@
+[project]
+name = "legal-rag"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "shimaa83", email = "alshimaa.abdelraof@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = [
+    "dagshub>=0.7.2",
+    "mlflow>=3.17.0",
+    "pdfplumber>=0.11.10",
+    "pgvector>=0.5.0",
+    "psycopg[binary]>=3.3.6",
+    "python-dotenv>=1.2.4",
+    "sentence-transformers>=6.1.0",
+]
+
+[project.scripts]
+legal-rag = "legal_rag:main"
+
+[build-system]
+requires = ["uv_build>=0.12.5,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "cryptography>=44.0.0",
+    "dvc[gdrive]>=3.67.1",
+    "pyopenssl>=25.0.0",
+    "pytest>=9.1.1",
+]

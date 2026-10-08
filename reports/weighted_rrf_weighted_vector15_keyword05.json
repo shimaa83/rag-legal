@@ -1,0 +1,468 @@
+{
+  "configuration": {
+    "name": "weighted_vector15_keyword05",
+    "vector_weight": 1.5,
+    "keyword_weight": 0.5
+  },
+  "fixed_parameters": {
+    "rrf_k": 20,
+    "candidate_k": 20,
+    "top_k": 10
+  },
+  "metrics": {
+    "recall_at_5": 1.0,
+    "mrr": 0.8844444444444445
+  },
+  "details": [
+    {
+      "question": "متى يجوز إبطال العقد للإكراه؟",
+      "expected_articles": [
+        127
+      ],
+      "top_5": [
+        140,
+        544,
+        144,
+        143,
+        127
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.2
+    },
+    {
+      "question": "كيف يجب تنفيذ العقد وفقًا لما اشتمل عليه وحسن النية؟",
+      "expected_articles": [
+        148
+      ],
+      "top_5": [
+        148,
+        680,
+        144,
+        658,
+        124
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يكون العقد قابلًا للإبطال لغلط في القانون؟",
+      "expected_articles": [
+        122
+      ],
+      "top_5": [
+        122,
+        143,
+        129,
+        142,
+        144
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ما شروط الوعد بإبرام عقد معين في المستقبل؟",
+      "expected_articles": [
+        101
+      ],
+      "top_5": [
+        101,
+        102,
+        678,
+        486,
+        680
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يجوز للشخص أن يتعاقد باسمه لمصلحة الغير؟",
+      "expected_articles": [
+        154
+      ],
+      "top_5": [
+        154,
+        156,
+        108,
+        153,
+        126
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "كيف يتم تفسير العقد إذا كانت عبارته واضحة؟",
+      "expected_articles": [
+        150
+      ],
+      "top_5": [
+        150,
+        89,
+        144,
+        94,
+        95
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يجوز للقاضي إبطال العقد بسبب الغبن والاستغلال؟",
+      "expected_articles": [
+        129
+      ],
+      "top_5": [
+        129,
+        140,
+        426,
+        141,
+        149
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ماذا يحدث إذا كان مقدار المبيع ناقصًا عما ذكر في العقد؟",
+      "expected_articles": [
+        433
+      ],
+      "top_5": [
+        433,
+        444,
+        443,
+        514,
+        435
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يستحق التعويض عن الفصل بسبب مخالفة شروط العقد؟",
+      "expected_articles": [
+        696
+      ],
+      "top_5": [
+        695,
+        696,
+        221,
+        868,
+        750
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "question": "متى يصح شرط منع التصرف في المال إذا ورد في العقد؟",
+      "expected_articles": [
+        823
+      ],
+      "top_5": [
+        823,
+        467,
+        824,
+        481,
+        1033
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يتم العقد بمجرد تبادل طرفين التعبير عن إرادتين متطابقتين؟",
+      "expected_articles": [
+        89
+      ],
+      "top_5": [
+        89,
+        94,
+        129,
+        833,
+        481
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ما هي طرق التعبير عن الإرادة في العقد؟",
+      "expected_articles": [
+        90
+      ],
+      "top_5": [
+        89,
+        90,
+        127,
+        137,
+        502
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "question": "متى ينتج التعبير عن الإرادة أثره؟",
+      "expected_articles": [
+        91
+      ],
+      "top_5": [
+        91,
+        92,
+        90,
+        901,
+        1005
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ماذا يحدث إذا مات من صدر منه التعبير عن الإرادة أو فقد أهليته قبل أن ينتج التعبير أثره؟",
+      "expected_articles": [
+        92
+      ],
+      "top_5": [
+        92,
+        91,
+        911,
+        901,
+        602
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ما أثر تحديد ميعاد للقبول على الموجب؟",
+      "expected_articles": [
+        93
+      ],
+      "top_5": [
+        93,
+        94,
+        381,
+        97,
+        98
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يتحلل الموجب من إيجابه إذا صدر الإيجاب في مجلس العقد؟",
+      "expected_articles": [
+        94
+      ],
+      "top_5": [
+        94,
+        129,
+        98,
+        93,
+        494
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ماذا يحدث إذا اتفق الطرفان على جميع المسائل الجوهرية واحتفظا بمسائل تفصيلية للاتفاق عليها فيما بعد؟",
+      "expected_articles": [
+        95
+      ],
+      "top_5": [
+        95,
+        101,
+        549,
+        1026,
+        952
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ماذا يحدث إذا اقترن القبول بما يزيد في الإيجاب أو يقيد منه أو يعدل فيه؟",
+      "expected_articles": [
+        96
+      ],
+      "top_5": [
+        96,
+        94,
+        381,
+        98,
+        93
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يعتبر التعاقد بين الغائبين قد تم؟",
+      "expected_articles": [
+        97
+      ],
+      "top_5": [
+        97,
+        106,
+        71,
+        69,
+        66
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يعتبر السكوت عن الرد قبولًا؟",
+      "expected_articles": [
+        98
+      ],
+      "top_5": [
+        98,
+        544,
+        125,
+        421,
+        316
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يتم العقد في المزايدات؟",
+      "expected_articles": [
+        99
+      ],
+      "top_5": [
+        94,
+        99,
+        129,
+        1058,
+        106
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "question": "ما المقصود بالقبول في عقود الإذعان؟",
+      "expected_articles": [
+        100
+      ],
+      "top_5": [
+        100,
+        149,
+        694,
+        227,
+        678
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "متى يقوم الحكم مقام العقد في الوعد بإبرام عقد؟",
+      "expected_articles": [
+        102
+      ],
+      "top_5": [
+        102,
+        101,
+        223,
+        160,
+        106
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "ما أثر دفع العربون وقت إبرام العقد؟",
+      "expected_articles": [
+        103
+      ],
+      "top_5": [
+        103,
+        144,
+        106,
+        129,
+        658
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "من يكون محل الاعتبار عند النظر في عيوب الإرادة إذا تم العقد بطريق النيابة؟",
+      "expected_articles": [
+        104
+      ],
+      "top_5": [
+        104,
+        150,
+        94,
+        144,
+        107
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "إلى من تضاف الحقوق والالتزامات الناتجة عن العقد الذي يبرمه النائب في حدود نيابته؟",
+      "expected_articles": [
+        105
+      ],
+      "top_5": [
+        107,
+        105,
+        146,
+        104,
+        106
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.5
+    },
+    {
+      "question": "متى لا يضاف أثر العقد الذي أبرمه النائب إلى الأصيل؟",
+      "expected_articles": [
+        106
+      ],
+      "top_5": [
+        107,
+        101,
+        106,
+        104,
+        105
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 0.3333333333333333
+    },
+    {
+      "question": "ماذا يحدث إذا جهل النائب ومن تعاقد معه انقضاء النيابة وقت العقد؟",
+      "expected_articles": [
+        107
+      ],
+      "top_5": [
+        107,
+        106,
+        129,
+        142,
+        104
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "هل يجوز للشخص أن يتعاقد مع نفسه باسم من ينوب عنه؟",
+      "expected_articles": [
+        108
+      ],
+      "top_5": [
+        108,
+        154,
+        479,
+        950,
+        152
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    },
+    {
+      "question": "من يكون أهلًا للتعاقد وفقًا للقانون المدني؟",
+      "expected_articles": [
+        109
+      ],
+      "top_5": [
+        109,
+        19,
+        108,
+        20,
+        154
+      ],
+      "recall_at_5": 1.0,
+      "reciprocal_rank": 1.0
+    }
+  ]
+}

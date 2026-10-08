@@ -1,0 +1,77 @@
+{
+  "num_questions": 30,
+  "results": [
+    {
+      "run_id": "33bd9947108b44c586f91ee90e087d19",
+      "configuration": {
+        "name": "rrf_k20_candidates20",
+        "rrf_k": 20,
+        "candidate_k": 20
+      },
+      "metrics": {
+        "recall_at_5": 0.9333333333333333,
+        "mrr": 0.8700396825396824
+      }
+    },
+    {
+      "run_id": "14d42190efc74af2807e971a54689c9d",
+      "configuration": {
+        "name": "rrf_k40_candidates20",
+        "rrf_k": 40,
+        "candidate_k": 20
+      },
+      "metrics": {
+        "recall_at_5": 0.9333333333333333,
+        "mrr": 0.8700396825396824
+      }
+    },
+    {
+      "run_id": "b58ffcc5e0294627a4ef0422097ca89b",
+      "configuration": {
+        "name": "rrf_k60_candidates20",
+        "rrf_k": 60,
+        "candidate_k": 20
+      },
+      "metrics": {
+        "recall_at_5": 0.9333333333333333,
+        "mrr": 0.8700396825396824
+      }
+    },
+    {
+      "run_id": "64fb59377283442d8c192c092ad1e206",
+      "configuration": {
+        "name": "rrf_k60_candidates50",
+        "rrf_k": 60,
+        "candidate_k": 50
+      },
+      "metrics": {
+        "recall_at_5": 0.9666666666666667,
+        "mrr": 0.8475396825396826
+      }
+    },
+    {
+      "run_id": "172043b634654094b0269dd27b403204",
+      "configuration": {
+        "name": "rrf_k100_candidates50",
+        "rrf_k": 100,
+        "candidate_k": 50
+      },
+      "metrics": {
+        "recall_at_5": 0.9666666666666667,
+        "mrr": 0.8452777777777778
+      }
+    }
+  ],
+  "best_configuration": {
+    "run_id": "33bd9947108b44c586f91ee90e087d19",
+    "configuration": {
+      "name": "rrf_k20_candidates20",
+      "rrf_k": 20,
+      "candidate_k": 20
+    },
+    "metrics": {
+      "recall_at_5": 0.9333333333333333,
+      "mrr": 0.8700396825396824
+    }
+  }
+}
