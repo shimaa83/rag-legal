@@ -31,9 +31,6 @@ jobs:
     services:
       postgres:
         image: pgvector/pgvector:pg18-trixie
-        credentials:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
         env:
           POSTGRES_DB: legal_rag
           POSTGRES_USER: rag_user
