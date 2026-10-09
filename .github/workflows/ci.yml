@@ -1,38 +1,61 @@
-
 name: Legal RAG CI
 
 on:
-  push:
-    branches: [legal-v1]
-  pull_request:
-    branches: [legal-v1]
+push:
+branches: [legal-v1]
+pull_request:
+branches: [legal-v1]
 
 permissions:
-  contents: read
+contents: read
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
+test:
+runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+```
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    env:
+      POSTGRES_DB: legal_rag
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: rag_password
+    ports:
+      - 5432:5432
+    options: >-
+      --health-cmd "pg_isready -U rag_user -d legal_rag"
+      --health-interval 10s
+      --health-timeout 5s
+      --health-retries 5
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.13"
+env:
+  DB_HOST: localhost
+  DB_PORT: 5432
+  DB_NAME: legal_rag
+  DB_USER: rag_user
+  DB_PASSWORD: rag_password
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
 
-      - name: Install dependencies
-        run: uv sync --frozen --no-dev
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.13"
 
-      - name: Lint with Ruff
-        run: uvx ruff check . --exit-zero .
+  - name: Install uv
+    uses: astral-sh/setup-uv@v6
+    with:
+      enable-cache: true
 
-      - name: Run tests
-        run: uv run --with pytest pytest -q
+  - name: Install dependencies
+    run: uv sync --frozen --no-dev
+
+  - name: Lint with Ruff
+    run: uvx ruff check . --exit-zero
+
+  - name: Run tests
+    run: uv run --with pytest pytest -q
+```
