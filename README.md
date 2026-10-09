@@ -1,121 +1,116 @@
 # Arabic Legal RAG — Egyptian Civil Code
 
-An MLOps-oriented Retrieval-Augmented Generation (RAG) system for the **Egyptian Civil Code**, with a focus on Arabic legal text processing, reproducible data pipelines, hybrid retrieval, and experiment tracking.
+An MLOps-oriented Retrieval-Augmented Generation (RAG) system for the Egyptian Civil Code, focused on Arabic legal text processing, reproducible data pipelines, PostgreSQL hybrid retrieval, RAG evaluation, and experiment tracking.
 
-The project is being developed incrementally following an MLOps/RAG project checklist.
-
----
+The project combines DVC, PostgreSQL, pgvector, hybrid search, Reciprocal Rank Fusion (RRF), Ollama, Gemini verification, MLflow/DagsHub, Langfuse, and BentoML.
 
 ## 1. Project Overview
 
-The system uses the Egyptian Civil Code as its primary knowledge source.
+The system retrieves relevant articles from the Egyptian Civil Code and generates Arabic answers grounded in the retrieved legal context.
 
-The current data pipeline is:
+### Architecture
 
 ```text
 Egyptian Civil Code PDF
-        │
-        ▼
-PDF → JSON Conversion
-        │
-        ▼
-Raw JSON
-        │
-        ▼
-Arabic Text Preprocessing
-        │
-        ▼
-Processed JSON
-        │
-        ▼
-Validation
-        │
-        ▼
-RAG / Retrieval Pipeline
+          |
+          v
+   PDF-to-JSON Conversion
+          |
+          v
+   Arabic Preprocessing
+          |
+          v
+   Processed Article Dataset
+          |
+          v
+    Chunking and Embeddings
+          |
+          v
+      PostgreSQL
+   +------------------+
+   | pgvector          |
+   | tsvector          |
+   +------------------+
+          |
+          v
+     Hybrid Retrieval
+          |
+          v
+    Weighted RRF
+          |
+          v
+    Retrieved Context
+          |
+          v
+       Ollama LLM
+          |
+          v
+    Gemini Verification
+          |
+          v
+  Answer with Legal Sources
 ```
 
-The project is designed to support a future hybrid retrieval architecture using:
+Langfuse provides tracing, MLflow tracks evaluation experiments, and DagsHub hosts the DVC data remote and MLflow tracking.
 
-* PostgreSQL
-* `pgvector` for vector search
-* PostgreSQL `tsvector` for keyword search
-* Reciprocal Rank Fusion (RRF)
-* Reranking
-* Generative LLM
-
----
-
-## 2. Current Project Status
+## 2. Project Status
 
 ### Implemented
 
-* Egyptian Civil Code PDF ingestion
-* PDF → structured JSON conversion
-* Arabic text preprocessing
-* DVC data versioning
-* DVC reproducible pipeline
-* DagsHub as DVC remote storage
-* PostgreSQL integration
-* Vector embeddings
-* Chunking
-* Hybrid retrieval components
-* RRF experiments
-* Weighted RRF experiments
-* Reranker component
-* Retrieval evaluation scripts
-* Automated unit tests
+* PDF-to-JSON conversion.
+* Arabic text preprocessing.
+* DVC data versioning and reproducible preprocessing pipeline.
+* DagsHub DVC remote.
+* PostgreSQL and pgvector integration.
+* Article chunking and multilingual embeddings.
+* Vector and keyword retrieval components.
+* Hybrid search and RRF experiments.
+* Weighted RRF experiments.
+* Reranker component and retrieval evaluation scripts.
+* RAG answer generation using Ollama.
+* Optional answer verification using Gemini.
+* Langfuse tracing integration.
+* RAGAS evaluation and MLflow/DagsHub experiment tracking.
+* BentoML serving endpoint.
+* Docker image build and publishing workflow.
 
-### Current test status
+### Current serving setup
 
-```text
-8 passed
-```
+The BentoML service was successfully tested locally at:
 
-Tests currently cover:
+`http://localhost:3002`
 
-* Chunking
-* Embeddings
-* Ingestion
-* Validation
+The API documentation is available at:
 
-### Planned / In Progress
+`http://localhost:3002/#/Service%20APIs/LegalRAG__ask`
 
-* MLflow experiment tracking
-* RAGAS evaluation
-* Linking every MLflow experiment to the exact DVC dataset version
-* FastAPI `/ask`
-* FastAPI `/health`
-* Streaming responses
-* BentoML serving
-* vLLM inference serving
-* Docker Compose production setup
-* Monitoring and tracing
-* Final RAG generation pipeline
+### Remaining work
 
----
+* Larger and more consistent RAGAS evaluation runs.
+* Recording the exact DVC dataset version in every evaluation run.
+* Performance optimization and repeated load testing.
+* Production deployment and monitoring.
+* Further integration and benchmarking of the reranker.
+* Verification of the complete Docker deployment on a clean machine.
+
+The existence of a component does not necessarily mean it is integrated into the live serving path. In particular, the reranker should be verified against the current retrieval and serving code before assuming that every request passes through it.
 
 ## 3. Repository Structure
 
+The main project files include:
+
 ```text
-legal_RAG/
-│
+rag-legal/
 ├── data/
 │   ├── raw/
 │   │   ├── egyptian_civil_code.pdf.dvc
 │   │   └── civil_code.json
-│   │
 │   ├── processed/
 │   │   └── civil_code.json
-│   │
 │   └── evaluation/
-│       └── retrieval_questions.json
-│
+│       ├── retrieval_questions.json
+│       └── ragas_dataset.json
 ├── reports/
-│   ├── retrieval_evaluation.json
-│   ├── rrf_experiment_summary.json
-│   ├── weighted_rrf_experiment_summary.json
-│   └── ...
-│
 ├── scripts/
 │   ├── evaluate_retrieval.py
 │   ├── experiment_rrf.py
@@ -126,7 +121,8 @@ legal_RAG/
 │   ├── test_hybrid_search.py
 │   ├── test_reranker.py
 │   └── test_vector_search.py
-│
+├── sql/
+│   └── schema.sql
 ├── src/
 │   └── legal_rag/
 │       ├── chunking.py
@@ -138,174 +134,238 @@ legal_RAG/
 │       ├── pdf_to_json.py
 │       ├── rag.py
 │       ├── reranker.py
-│       └── retrieval.py
-│
+│       ├── retrieval.py
+│       └── service.py
 ├── tests/
-│   ├── test_chunking.py
-│   ├── test_embeddings.py
-│   ├── test_ingestion.py
-│   └── test_validation.py
-│
 ├── dvc.yaml
 ├── dvc.lock
 ├── docker-compose.yml
 ├── pyproject.toml
 ├── uv.lock
+├── .env.example
 └── README.md
 ```
 
----
+This is a representative structure; consult the repository for the exact current file list.
 
 ## 4. Requirements
 
-The project currently requires:
+For running from source:
 
+* Git
 * Python 3.13+
 * `uv`
-* Git
 * Docker Desktop
-* DVC
-* Access to the DagsHub DVC remote
+* Ollama
+* Access to the DagsHub DVC remote if the source PDF must be downloaded
+* The required credentials for any enabled external services
 
-PostgreSQL is used for the retrieval layer and is provided through Docker Compose.
+PostgreSQL with pgvector is provided through Docker Compose.
 
----
+## 5. Quick Start — Run from GitHub
 
-## 5. Installation
+These steps describe the source-code workflow. They assume the reviewer has access to the required data and can configure the model services.
 
-Clone the repository:
+### Step 1 — Clone the repository
 
 ```bash
 git clone https://github.com/shimaa83/rag-legal.git
 cd rag-legal
-```
-
-Checkout the development branch:
-
-```bash
 git checkout legal-v1
 ```
 
-Install the project dependencies:
+### Step 2 — Install dependencies
 
 ```bash
-uv sync
+uv sync --frozen
 ```
 
----
+### Step 3 — Configure environment variables
 
-## 6. DVC Data Versioning
+Copy `.env.example` to `.env`.
 
-DVC is used as the source of truth for the project's datasets and reproducible data pipeline.
+Set the PostgreSQL connection details, DagsHub credentials, and any required model API keys.
 
-The original Egyptian Civil Code PDF is **not stored directly in Git**.
+Example PostgreSQL settings:
 
-Instead, Git tracks:
+```dotenv
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=legal_rag
+POSTGRES_USER=rag_user
+POSTGRES_PASSWORD=replace_with_a_secure_password
+```
+
+For DagsHub tracking, configure the repository and token according to `.env.example`:
+
+```dotenv
+USE_LOCAL_MLFLOW=0
+DAGSHUB_USER=shimaa83
+DAGSHUB_REPO=rag-legal
+DAGSHUB_USER_TOKEN=replace_with_your_dagshub_token
+```
+
+The exact setting for Gemini and Langfuse depends on whether those integrations are enabled.
+
+**Security:** Never commit `.env`, access tokens, or API keys to Git.
+
+### Step 4 — Start PostgreSQL
+
+```bash
+docker compose up -d postgres
+```
+
+### Step 5 — Retrieve and prepare the dataset
+
+If the data files are not already available locally, configure DVC access to the DagsHub remote and retrieve the tracked source PDF:
+
+```bash
+uv run dvc pull
+```
+
+Rebuild the conversion and preprocessing pipeline:
+
+```bash
+uv run dvc repro
+```
+
+The pipeline generates the derived JSON files. It does not populate PostgreSQL automatically.
+
+### Step 6 — Initialize the database schema
+
+Apply the SQL schema:
+
+```bash
+psql -h localhost -p 5432 -U rag_user -d legal_rag -f sql/schema.sql
+```
+
+Ensure that the database contains the legal chunks and their embeddings before starting the RAG service.
+
+If the database is empty, run the repository's ingestion script:
+
+```bash
+uv run python scripts/test_batch_ingestion.py
+```
+
+This script processes the chunks and inserts them into PostgreSQL. Despite its name, it ingests the full set of chunks loaded by the script, so do not rerun it unnecessarily when the database is already populated.
+
+### Step 7 — Start Ollama
+
+Download the configured generation model:
+
+```bash
+ollama pull qwen2.5:3b
+```
+
+Ensure Ollama is running and reachable by the application. If the application runs inside a container, configure its model-service URL appropriately; `localhost` inside a container refers to that container.
+
+### Step 8 — Start BentoML
+
+```bash
+uv run bentoml serve legal_rag.service:LegalRAG --port 3002
+```
+
+### Step 9 — Test the service
+
+Open:
+
+`http://localhost:3002/#/Service%20APIs/LegalRAG__ask`
+
+Submit the Arabic question:
+
+```text
+ما هي شروط العقد؟
+```
+
+Review the generated answer and its source citations.
+
+### Step 10 — Run tests
+
+```bash
+uv run pytest
+```
+
+An earlier recorded test result was `8 passed`. Run the tests in your current checkout to confirm its actual result.
+
+## 6. Run Using the Published Docker Image
+
+The currently confirmed image reference is on GitHub Container Registry (GHCR):
+
+```bash
+docker pull ghcr.io/shimaa83/rag-legal:sha-e5d004f
+```
+
+The GitHub Actions workflow also contains a Docker Hub login step. Publishing to Docker Hub requires the image metadata to include the Docker Hub repository name and a successful push run.
+
+The intended Docker Hub repository is:
+
+`shimaa83/rag-legal`
+
+Once the image and tag are confirmed to exist on Docker Hub, it can be pulled using:
+
+```bash
+docker pull shimaa83/rag-legal:sha-e5d004f
+```
+
+### Before running the container
+
+1. Configure the required environment variables.
+2. Ensure PostgreSQL is running and contains the legal chunks and embeddings.
+3. Ensure Ollama is running with the configured generation model.
+4. Configure the container to reach PostgreSQL and Ollama using addresses accessible from inside the container.
+5. Use the image's documented startup command and publish its service port.
+
+The Docker image alone does not guarantee that PostgreSQL, Ollama, the dataset, or the embeddings are included. Verify the image's Dockerfile and startup command before relying on a generic `docker run` command.
+
+After startup, open:
+
+`http://localhost:3002/#/Service%20APIs/LegalRAG__ask`
+
+Then submit the same test question:
+
+`ما هي شروط العقد؟`
+
+## 7. DVC Data Versioning
+
+DVC manages the source PDF and derived datasets, while Git tracks the code, DVC metadata, and pipeline definitions.
+
+The original PDF is not stored directly in Git. Git tracks its DVC pointer, such as:
 
 ```text
 data/raw/egyptian_civil_code.pdf.dvc
 ```
 
-while the actual PDF is stored in the configured DVC remote on DagsHub.
+The configured DVC remote is:
 
-The DVC remote is:
+`https://dagshub.com/shimaa83/rag-legal.dvc`
 
-```text
-https://dagshub.com/shimaa83/rag-legal.dvc
-```
+Credentials should be configured locally and never committed to the repository.
 
-Credentials are stored locally and are not committed to Git.
-
----
-
-## 7. DVC Pipeline
-
-The current pipeline contains two stages.
-
-### Stage 1 — PDF Conversion
-
-```text
-data/raw/egyptian_civil_code.pdf
-              │
-              ▼
-src/legal_rag/pdf_to_json.py
-              │
-              ▼
-data/raw/civil_code.json
-```
-
-Command:
+### Reproduce the data pipeline
 
 ```bash
-uv run python -m legal_rag.pdf_to_json \
-    data/raw/egyptian_civil_code.pdf \
-    data/raw/civil_code.json
+uv run dvc pull
+uv run dvc repro
 ```
 
-### Stage 2 — Preprocessing
+`dvc pull` retrieves tracked data from the remote.
 
-```text
-data/raw/civil_code.json
-              │
-              ▼
-src/legal_rag/data_preprocessing.py
-              │
-              ▼
-data/processed/civil_code.json
-```
+`dvc repro` executes the stages defined in `dvc.yaml` when required by the dependency state.
 
-Command:
+The pipeline currently contains two stages:
 
-```bash
-uv run python -m legal_rag.data_preprocessing
-```
+1. PDF conversion: source PDF to raw JSON.
+2. Arabic preprocessing: raw JSON to processed JSON.
 
-### Complete pipeline
+The exact pipeline state is recorded in `dvc.lock`.
 
-The complete pipeline is defined in:
+DVC does not currently run the PostgreSQL ingestion stage, so database population is a separate step.
 
-```text
-dvc.yaml
-```
+## 8. Data Processing
 
-and its exact reproducible state is recorded in:
+The preprocessing pipeline produces structured article-level records for the Egyptian Civil Code.
 
-```text
-dvc.lock
-```
-
-Run the complete pipeline with:
-
-```bash
-dvc repro
-```
-
----
-
-## 8. Reproducing the Dataset
-
-A reviewer can reproduce the current data pipeline using:
-
-```bash
-git clone https://github.com/shimaa83/rag-legal.git
-cd rag-legal
-git checkout legal-v1
-uv sync
-dvc pull
-dvc repro
-```
-
-`dvc pull` retrieves the versioned PDF from the DVC remote.
-
-`dvc repro` reconstructs the derived JSON artifacts according to `dvc.yaml` and `dvc.lock`.
-
----
-
-## 9. Data Processing
-
-The preprocessing stage currently processes the Egyptian Civil Code into a structured article-level JSON dataset.
-
-Each article is represented as a structured record containing information such as:
+Example:
 
 ```json
 {
@@ -322,454 +382,268 @@ Each article is represented as a structured record containing information such a
 }
 ```
 
-The current preprocessing pipeline produces approximately:
+The project has previously produced approximately 1,149 articles. The exact count should be verified against the current processed dataset.
 
-```text
-1149 articles
-```
+The pipeline is intended to preserve article metadata and source citations for retrieval and answer attribution.
 
----
+## 9. PostgreSQL and Hybrid Retrieval
 
-## 10. Testing
+PostgreSQL provides the persistent retrieval store.
 
-Pytest is configured to collect tests only from:
+### Vector search
 
-```text
-tests/
-```
+`pgvector` stores and searches embeddings generated using:
 
-Manual/integration scripts under:
+`intfloat/multilingual-e5-small`
 
-```text
-scripts/
-```
+The embedding dimension is 384.
 
-are not automatically collected by pytest.
+The embedding implementation uses the `passage:` prefix for documents and the `query:` prefix for queries.
 
-Run the test suite:
+### Keyword search
 
-```bash
-uv run pytest
-```
+PostgreSQL `tsvector` supports lexical retrieval.
 
-Current result:
-
-```text
-8 passed
-```
-
-To inspect test collection without executing the tests:
-
-```bash
-uv run pytest --collect-only
-```
-
----
-
-## 11. PostgreSQL and Hybrid Retrieval
-
-The retrieval architecture is being developed around PostgreSQL.
-
-The planned hybrid search combines:
-
-### Vector Search
-
-Using:
-
-```text
-pgvector
-```
-
-to retrieve semantically similar legal articles/chunks.
-
-### Keyword Search
-
-Using PostgreSQL:
-
-```text
-tsvector
-```
-
-to retrieve documents based on lexical matching.
+This complements semantic retrieval, particularly when questions contain specific legal terms or wording.
 
 ### Reciprocal Rank Fusion
 
-The vector and keyword rankings are combined using:
-
-```text
-RRF
-```
-
-The project also contains experiments for weighted combinations of vector and keyword retrieval.
-
----
-
-## 12. Reranking
-
-After hybrid retrieval, a reranker is used to improve the ordering of retrieved candidates.
+RRF combines the rankings returned by vector and keyword retrieval. The project also includes weighted RRF experiments.
 
 The intended retrieval flow is:
 
 ```text
-User Query
-    │
-    ├──────────────► Vector Search
-    │
-    └──────────────► Keyword Search
-                         │
-                         ▼
-                        RRF
-                         │
-                         ▼
-                    Candidates
-                         │
-                         ▼
-                      Reranker
-                         │
-                         ▼
-                  Best Context
+User Question
+      |
+      +--------------------+
+      |                    |
+      v                    v
+  Vector Search       Keyword Search
+      |                    |
+      +---------+----------+
+                |
+                v
+           RRF Fusion
+                |
+                v
+       Ranked Candidates
+                |
+                v
+          Best Context
 ```
 
-The retrieval and reranking experiments are stored under:
+The current RAG implementation uses the configured hybrid retrieval path. Consult the serving code to verify which ranking and reranking options are active for a specific run.
+
+## 10. Reranking
+
+The project includes a reranker component and evaluation scripts.
+
+A reranker can rescore retrieved candidates using the query and candidate text, potentially improving the relevance of the final context.
+
+The intended sequence is:
 
 ```text
-reports/
+Hybrid Retrieval
+       |
+       v
+    RRF Fusion
+       |
+       v
+    Candidates
+       |
+       v
+    Reranking
+       |
+       v
+  Final Context
 ```
 
----
+The existence of the reranker module does not by itself establish that the BentoML serving path invokes it on every request.
 
-## 13. MLflow and DVC Integration
+Retrieval and ranking experiment outputs are stored under `reports/`.
 
-MLflow will be used for experiment tracking.
+## 11. RAG Generation Pipeline
 
-DVC and MLflow have different responsibilities:
+The current RAG flow is:
+
+1. **Question:** Receive an Arabic legal question.
+2. **Retrieval:** Search the Egyptian Civil Code using PostgreSQL hybrid retrieval.
+3. **Ranking:** Combine vector and keyword rankings using the configured RRF strategy.
+4. **Context building:** Prepare retrieved legal text and article citations, excluding repealed articles where the implementation applies this filter.
+5. **Generation:** Use Ollama, with `qwen2.5:3b` as the configured default, to draft an answer grounded in the retrieved context.
+6. **Verification:** When configured, send the question, legal context, and draft answer to Gemini for review.
+7. **Sources:** Return the final answer with the retrieved legal article citations.
+8. **Tracing:** Record the operation through Langfuse when tracing is enabled.
+
+The system is intended for legal research and experimentation. Generated answers should be checked against the original legislation.
+
+## 12. RAGAS Evaluation
+
+RAGAS is used to evaluate answer quality and the relevance of retrieved context.
+
+The evaluation dataset is located at:
 
 ```text
-DVC
-│
-├── Dataset versioning
-├── Source PDF
-├── Derived datasets
-└── Reproducible data pipeline
-
-
-MLflow
-│
-├── Experiment parameters
-├── Metrics
-├── Model / embedding configuration
-├── RAG evaluation
-└── Experiment artifacts
+data/evaluation/ragas_dataset.json
 ```
 
-A key project requirement is that **every MLflow experiment must be traceable to the exact DVC data version used by that experiment**.
+The evaluation workflow is:
 
-Future MLflow runs will therefore record information such as:
+1. Load the evaluation questions.
+2. Run the RAG pipeline for each question.
+3. Collect the generated answer, retrieved context, and reference information required by the evaluator.
+4. Calculate Faithfulness, Answer Relevancy, Context Precision, and Context Recall.
+5. Evaluate article retrieval using Article Recall@5 and Article Precision@5.
+6. Save per-question results, summaries, and errors under `data/evaluation/runs/`.
+7. Log experiment parameters, metrics, and artifacts to MLflow/DagsHub.
+
+Evaluation scripts support configurable experiment settings, including the model, prompt, and retrieval parameters.
+
+### What the metrics mean
+
+| Metric              | Purpose                                                                   |
+| ------------------- | ------------------------------------------------------------------------- |
+| Faithfulness        | Measures whether the answer is supported by the retrieved context.        |
+| Answer Relevancy    | Measures how relevant the answer is to the question.                      |
+| Context Precision   | Measures how relevant the retrieved context is.                           |
+| Context Recall      | Measures how much of the required reference information is captured.      |
+| Article Recall@5    | Measures whether the relevant article appears among the top five results. |
+| Article Precision@5 | Measures the proportion of the top five results considered relevant.      |
+
+Metric values are meaningful only in relation to the evaluation dataset, references, and experiment configuration used to calculate them.
+
+## 13. RAG Experiment Comparison
+
+The following results are the experiment values recorded during development. The runs used different sample sizes and should not be interpreted as a controlled, same-dataset comparison.
+
+| Experiment          | Questions | Faithfulness | Answer Relevancy | Context Precision | Context Recall | Article Recall@5 | Article Precision@5 |
+| ------------------- | --------: | -----------: | ---------------: | ----------------: | -------------: | ---------------: | ------------------: |
+| Successful baseline |        20 |       0.3067 |           0.0456 |            0.8857 |         1.0000 |           1.0000 |              0.2000 |
+| Prompt 3            |         5 |       0.4667 |           0.5736 |           ≈1.0000 |         1.0000 |           1.0000 |              0.2000 |
+| Prompt 4            |         5 |       0.5500 |           0.8941 |           ≈1.0000 |         1.0000 |           1.0000 |              0.2000 |
+| Updated prompt      |         5 |       0.8500 |           0.9356 |            1.0000 |         1.0000 |           1.0000 |              0.2000 |
+
+A later five-question run recorded the following per-sample metrics:
+
+| Metric                   | Recorded value |
+| ------------------------ | -------------: |
+| Sample Faithfulness      |         1.0000 |
+| Sample Answer Relevancy  |         0.8368 |
+| Sample Context Precision |        ≈1.0000 |
+| Sample Context Recall    |         1.0000 |
+
+All four RAGAS metrics were valid for all five questions in that run, with zero failed evaluations.
+
+### Interpretation
+
+The updated prompt showed improved Faithfulness and Answer Relevancy in the recorded five-question experiment. Because the sample is small and the experiments may use different configurations, a larger evaluation on the same fixed dataset is required before concluding that the improvement generalizes.
+
+Article Precision@5 remained 0.20 in the comparison table. This indicates that retrieval relevance and ranking should continue to be investigated even when Article Recall@5 is high.
+
+## 14. MLflow and DagsHub Experiment Tracking
+
+MLflow tracks experiment configurations, metrics, and artifacts. DagsHub provides the remote MLflow tracking backend when configured as the default.
+
+The experiment name currently configured in the project is:
 
 ```text
-dvc_revision
-dataset
-dataset_path
-chunk_size
-overlap
-embedding_model
-reranker
+legal-rag_a5
 ```
 
-along with evaluation metrics such as:
+Tracking responsibilities:
+
+| Tool     | Responsibility                                               |
+| -------- | ------------------------------------------------------------ |
+| Git      | Source code and version history                              |
+| DVC      | Source PDF, derived datasets, and reproducible data pipeline |
+| MLflow   | Experiment parameters, metrics, and artifacts                |
+| DagsHub  | Remote DVC storage and MLflow experiment tracking            |
+| RAGAS    | RAG quality evaluation                                       |
+| Langfuse | Request-level tracing and prompt/LLM observability           |
+
+### Configuration
+
+In `.env`, configure the DagsHub repository and token. For remote tracking, use the configuration expected by `src/legal_rag/config.py` and the evaluation script.
+
+The tracking URI follows this pattern:
 
 ```text
-faithfulness
-answer_relevancy
-context_recall
-precision
+https://dagshub.com/shimaa83/rag-legal.mlflow
 ```
 
-The PDF and datasets will remain managed by DVC rather than being duplicated inside MLflow.
+If local MLflow is explicitly enabled, the project can instead use its configured local tracking URI. Remote DagsHub tracking is the intended default for shared experiments.
 
----
+### Reproducible experiment metadata
 
-## 14. Future RAG Serving Architecture
+Each experiment should record the configuration needed to reproduce it, including:
 
-The planned production architecture is:
+* Git revision.
+* DVC revision or dataset version.
+* Dataset path and evaluation sample size.
+* Generator and embedding model.
+* Prompt version.
+* Chunking parameters where applicable.
+* Retrieval and RRF configuration.
+* Reranker configuration where used.
+* RAGAS and article retrieval metrics.
 
-```text
-                    User
-                      │
-                      ▼
-                FastAPI /ask
-                      │
-                      ▼
-                  RAG Service
-                      │
-          ┌───────────┴───────────┐
-          ▼                       ▼
-     PostgreSQL                 Reranker
-   Hybrid Retrieval                │
-          │                        │
-       Vector +                    │
-       Keyword                     │
-          │                        │
-          └──────────► RRF ◄───────┘
-                       │
-                       ▼
-                    Context
-                       │
-                       ▼
-                     vLLM
-                       │
-                       ▼
-                 Generative LLM
-                       │
-                       ▼
-                  Final Answer
-```
+The source PDF and datasets remain managed by DVC rather than being duplicated inside MLflow.
 
-BentoML will later be used to package and serve the RAG application.
+## 15. Langfuse Tracing
 
-vLLM will serve the generative language model.
+Langfuse is used for observability of the RAG execution path.
 
-The `/ask` endpoint will eventually support streaming responses.
+The project can trace operations such as:
 
----
+* Question processing.
+* Hybrid retrieval.
+* LLM generation.
+* Gemini verification when enabled.
+* Final answer and source production.
 
-## 15. Planned API
+Configure the required Langfuse credentials in `.env` if remote tracing is enabled. For local deployment, use the configured Langfuse host.
 
-The planned FastAPI interface is:
+Tracing helps investigate latency and errors across retrieval, generation, and verification.
 
-### `POST /ask`
+## 16. BentoML Service
 
-Request:
+The RAG service is exposed through BentoML.
 
-```json
-{
-  "question": "ما هي شروط العقد؟"
-}
-```
-
-Response:
-
-```json
-{
-  "answer": "...",
-  "sources": [
-    "Egyptian Civil Code, Article ..."
-  ]
-}
-```
-
-Sources will reference legal articles rather than internal chunk IDs.
-
-### `GET /health`
-
-Planned response:
-
-```json
-{
-  "status": "healthy",
-  "documents_indexed": 1149
-}
-```
-
----
-
-## 16. Reproducibility Philosophy
-
-The project follows the principle:
-
-```text
-Data Versioning  → DVC
-Experiment Tracking → MLflow
-Code Versioning → Git
-Containerization → Docker
-Model Serving → vLLM / BentoML
-Evaluation → RAGAS
-```
-
-This separation allows an experiment to be reproduced by identifying:
-
-1. The Git code version.
-2. The exact DVC dataset version.
-3. The preprocessing pipeline version.
-4. The chunking configuration.
-5. The embedding model.
-6. The retrieval configuration.
-7. The reranker configuration.
-8. The evaluation results.
-
----
-
-## 17. Current Development Branch
-
-Current development work is being performed on:
-
-```text
-legal-v1
-```
-
-The `main` branch is reserved for reviewed and approved changes.
-
-The current branch should be reviewed before merging into `main`.
-
----
-
-## 18. Roadmap
-
-### Phase 1 — Data & Reproducibility
-
-* [x] PDF ingestion
-* [x] PDF → JSON conversion
-* [x] Arabic preprocessing
-* [x] DVC configuration
-* [x] DagsHub DVC remote
-* [x] Reproducible DVC pipeline
-* [x] Data validation tests
-
-### Phase 2 — Retrieval
-
-* [x] Article chunking
-* [x] Embeddings
-* [x] PostgreSQL
-* [x] Vector search
-* [x] Keyword search
-* [x] Hybrid retrieval
-* [x] RRF experiments
-* [x] Reranker
-* [x] Retrieval evaluation
-
-### Phase 3 — Experiment Tracking
-
-* [ ] MLflow experiments
-* [ ] DVC version recorded with every MLflow run
-* [ ] RAGAS evaluation
-* [ ] Compare multiple configurations
-* [ ] Register best configuration
-
-### Phase 4 — RAG API
-
-* [ ] Complete RAG generation pipeline
-* [ ] FastAPI `/ask`
-* [ ] FastAPI `/health`
-* [ ] Streaming responses
-* [ ] Article-level source citations
-
-### Phase 5 — Serving
-
-* [ ] BentoML
-* [ ] vLLM
-* [ ] Generative model optimization
-* [ ] Docker Compose production setup
-
-### Phase 6 — Monitoring
-
-* [ ] Request metrics
-* [ ] Latency/error monitoring
-* [ ] RAGAS monitoring
-* [ ] Retrieval/cosine drift monitoring
-* [ ] Langfuse tracing
-* [ ] Token-cost monitoring
-
----
-
-## 19. Quick Start
-
-For a reviewer, the current reproducible workflow is:
+### Start locally
 
 ```bash
-git clone https://github.com/shimaa83/rag-legal.git
-cd rag-legal
-git checkout legal-v1
-uv sync
-dvc pull
-dvc repro
-uv run pytest
+uv run bentoml serve legal_rag.service:LegalRAG --port 3002
 ```
 
-Expected test result:
+The service exposes an `ask` API accepting a question and an optional `top_k` parameter.
+
+API documentation:
+
+`http://localhost:3002/#/Service%20APIs/LegalRAG__ask`
+
+Example question:
 
 ```text
-8 passed
+ما هي شروط العقد؟
 ```
 
----
-### vLLM Hardware and Local Development
+The response includes the question, generated answer, and sources.
 
-vLLM is planned as the generative model serving layer for the production RAG architecture.
+This is a locally hosted development service, not a public deployment URL.
 
-The current development environment is Windows and CPU-only, so vLLM is **not used for local inference**. The local RAG pipeline can be developed and tested independently of vLLM, including PostgreSQL hybrid retrieval, RRF, reranking, and evaluation.
+## 17. Locust Load Testing
 
-For the final serving/deployment stage, vLLM should be deployed in a Linux-based environment with a compatible GPU and sufficient VRAM for the selected generative model.
+An initial Locust test was performed against the locally hosted BentoML RAG API.
 
-The planned architecture is:
-
-```text
-FastAPI /ask
-     ↓
-BentoML RAG Service
-     ↓
-PostgreSQL Hybrid Search
-     ↓
-RRF
-     ↓
-Reranker
-     ↓
-vLLM
-     ↓
-Generative LLM
-```
-
-## RAG Pipeline
-
-1. **Question:** Receive a non-empty Arabic legal question.
-2. **Hybrid retrieval:** Search the Egyptian Civil Code using PostgreSQL hybrid search (`pgvector` vector search + `tsvector` keyword search).
-3. **Rank results:** Combine retrieval rankings with weighted Reciprocal Rank Fusion (RRF), using the configured `candidate_k` and `top_k`.
-4. **Build context:** Prepare retrieved article texts and citations, excluding repealed articles and empty text.
-5. **Generate:** Use the local Ollama model (`qwen2.5:3b` by default) to draft an answer grounded in the retrieved context.
-6. **Verify:** Send the question, legal context, and draft answer to Gemini for review; return one final answer and its sources.
-7. **Trace:** Record the RAG operation in Langfuse.
-
-## RAGAS Evaluation
-
-1. Load the Arabic evaluation dataset from `data/evaluation/ragas_dataset.json`.
-2. Run the RAG pipeline for each question using the configured generator, prompt, and retrieval settings.
-3. Evaluate answers and retrieved contexts with **Faithfulness**, **Answer Relevancy**, **Context Precision**, and **Context Recall**.
-4. Measure article retrieval with **Article Recall@5** and **Article Precision@5**.
-5. Save per-question results, summary metrics, and errors under `data/evaluation/runs/`; log parameters, metrics, prompt, and artifacts to MLflow/DagsHub.
-
-## RAG Experiment Comparison
-
-| Experiment | Questions | Faithfulness | Answer Relevancy | Context Precision | Context Recall | Article Recall@5 | Article Precision@5 |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| Successful baseline | 20 | 0.3067 | 0.0456 | 0.8857 | 1.0000 | 1.0000 | 0.2000 |
-| Prompt 3 | 5 | 0.4667 | 0.5736 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
-| Prompt 4 | 5 | 0.5500 | 0.8941 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
-| Updated prompt | 5 | 0.8500 | 0.9356 | 1.0000 | 1.0000 | 1.0000 | 0.2000 |
-
-**Latest run status:** All four RAGAS metrics were valid for all 5 questions; each metric had 0 failed evaluations. `sample_faithfulness=1.0000`, `sample_answer_relevancy=0.8368`, `sample_context_precision≈1.0000`, and `sample_context_recall=1.0000` were also logged separately.
-
-**Interpretation:** The updated prompt improved faithfulness and answer relevancy in this five-question run. Since the sample is small, evaluate it on the same larger dataset as previous runs before treating the improvement as conclusive. Article Precision@5 remains 0.20, so retrieval ranking/relevance still needs investigation.
-
-## BentoML Service
-
-The BentoML service is currently running locally at:
-
-- **Local URL:** http://localhost:3002/
-
-This address is local to the machine running BentoML and is not a public deployment URL. Use the service's configured API route to submit a question; the root URL alone does not confirm which endpoints are available.
-
-### Locust Load Testing
-
-We used Locust to perform an initial load test of the Arabic Legal RAG API served through BentoML.
-
-**Test configuration**
+### Test configuration
 
 * Endpoint: `POST /ask`
 * Target URL: `http://localhost:3002`
-* Request payload: A randomly selected legal question with `top_k=5`
+* Request payload: a selected legal question with `top_k=5`
 * Timeout: 300 seconds
-* Questions: 6 predefined Egyptian Civil Code questions
+* Question set: six predefined Egyptian Civil Code questions
 
-**Initial Results**
+### Initial results
 
 | Metric                |         Result |
 | --------------------- | -------------: |
@@ -783,15 +657,195 @@ We used Locust to perform an initial load test of the Arabic Legal RAG API serve
 | Maximum Response Time |     150,746 ms |
 | Average Response Size | 1,985.71 bytes |
 
-**Observations**
+### Observations
 
-* All 7 requests completed successfully, with no failures reported by Locust.
-* The average response time was approximately 99.63 seconds, indicating a significant latency concern.
-* The test is preliminary because the sample size is small.
-* Further profiling is required to identify latency contributions from retrieval, Ollama generation, and Gemini calls.
+* All seven requests completed successfully, with no failures reported by Locust.
+* Average latency was approximately 99.63 seconds, which is too high for a responsive interactive service.
+* The sample is small and is only an initial local benchmark.
+* Further profiling is needed to identify latency contributions from PostgreSQL retrieval, Ollama generation, and Gemini verification.
 
-These results represent an initial local test and should not be interpreted as production capacity or a final performance benchmark.
+These results should not be interpreted as production capacity or a final performance benchmark.
 
-## 20. License
+## 18. Tests
+
+The test suite is located under:
+
+```text
+tests/
+```
+
+Run it with:
+
+```bash
+uv run pytest
+```
+
+The suite covers components such as chunking, embeddings, ingestion, and validation.
+
+To inspect test collection:
+
+```bash
+uv run pytest --collect-only
+```
+
+Manual and integration scripts under `scripts/` are not automatically collected as part of the normal pytest suite.
+
+For CI, the workflow installs dependencies, prepares the test database, initializes the schema, runs code checks and compilation, and executes tests if the `tests/` directory exists.
+
+The Docker job builds and publishes the image after the test job succeeds, except that pull-request builds do not push the image.
+
+## 19. CI/CD and Docker Image Publishing
+
+The GitHub Actions workflow is located under:
+
+```text
+.github/workflows/
+```
+
+It is triggered by pushes to `main` and `legal-v1`, pull requests, and manual dispatch.
+
+### CI
+
+The CI job includes:
+
+* Dependency installation using `uv`.
+* Dataset retrieval and preprocessing when the DagsHub token is available.
+* PostgreSQL schema initialization.
+* Ruff lint and format checks.
+* Python compilation checks.
+* Pytest execution.
+
+The Ruff checks are configured with `continue-on-error: true`, so Ruff findings do not necessarily fail the job.
+
+### CD
+
+The Docker job builds the image and publishes it when the event is not a pull request.
+
+The confirmed GHCR image reference is:
+
+```text
+ghcr.io/shimaa83/rag-legal:sha-e5d004f
+```
+
+The intended Docker Hub repository is:
+
+```text
+shimaa83/rag-legal
+```
+
+Docker Hub publication requires the workflow's image metadata to include that repository name and the push job to succeed. Verify the tag in the registry before instructing reviewers to pull it.
+
+A successful image build does not, by itself, prove that the complete application can run on a clean machine with PostgreSQL, the dataset, and Ollama.
+
+## 20. Planned Production Architecture
+
+The intended production architecture is:
+
+```text
+User
+ |
+ v
+RAG API / BentoML
+ |
+ v
+PostgreSQL Hybrid Retrieval
+ |
+ v
+RRF / Optional Reranker
+ |
+ v
+Retrieved Legal Context
+ |
+ v
+Generative Model
+ |
+ v
+Answer + Article Citations
+```
+
+Future serving and deployment work includes:
+
+* Streaming responses.
+* Production-grade health checks.
+* vLLM inference serving.
+* Generative model optimization.
+* Docker Compose deployment of the required services.
+* Request latency and error monitoring.
+* Retrieval and embedding drift monitoring.
+* Ongoing RAGAS quality evaluation.
+* Token-cost monitoring.
+
+### vLLM and local development
+
+The current development environment is Windows and CPU-only. vLLM is planned for the production serving stage and is not the current local inference engine.
+
+The local RAG workflow uses Ollama for generation. A production vLLM deployment should use a compatible Linux environment and suitable GPU resources for the selected model.
+
+## 21. Reproducibility
+
+The project's reproducibility approach separates responsibilities:
+
+```text
+Git       -> Code versioning
+DVC       -> Dataset versioning and preprocessing pipeline
+MLflow    -> Experiment parameters, metrics, and artifacts
+RAGAS     -> RAG quality evaluation
+Langfuse  -> Request tracing
+Docker    -> Container packaging
+BentoML   -> RAG service serving
+Ollama    -> Current local generation
+vLLM      -> Planned production inference
+```
+
+To reproduce an experiment, record the code revision, DVC dataset version, model configuration, prompt, retrieval parameters, and evaluation results.
+
+## 22. Roadmap
+
+### Phase 1 — Data and reproducibility
+
+* [x] PDF ingestion and conversion.
+* [x] Arabic preprocessing.
+* [x] DVC configuration and DagsHub remote.
+* [x] Reproducible conversion and preprocessing pipeline.
+* [x] Data validation tests.
+
+### Phase 2 — Retrieval
+
+* [x] Article chunking and embeddings.
+* [x] PostgreSQL integration.
+* [x] Vector and keyword retrieval components.
+* [x] Hybrid search and RRF experiments.
+* [x] Reranker component.
+* [x] Retrieval evaluation scripts.
+
+### Phase 3 — Evaluation and experiment tracking
+
+* [x] RAGAS evaluation workflow.
+* [x] MLflow/DagsHub experiment tracking.
+* [ ] Consistent larger-scale comparison across configurations.
+* [ ] Record exact DVC dataset version in every experiment.
+* [ ] Select and register the best validated configuration.
+
+### Phase 4 — Serving and optimization
+
+* [x] Local BentoML service.
+* [x] Local Ollama generation.
+* [ ] Production streaming and health checks.
+* [ ] vLLM deployment.
+* [ ] Latency optimization and reranker benchmarking.
+
+### Phase 5 — Monitoring and deployment
+
+* [x] Langfuse tracing integration.
+* [x] Docker image build workflow.
+* [ ] Verify clean-machine Docker deployment.
+* [ ] Complete service and database orchestration.
+* [ ] Request, latency, and error monitoring.
+* [ ] Retrieval drift and ongoing RAGAS monitoring.
+* [ ] Token-cost monitoring.
+
+## 23. License and Disclaimer
 
 This project is developed for educational and MLOps/RAG engineering purposes.
+
+Generated responses are intended to support legal research and must be verified against the applicable legislation and authoritative legal sources. The system is not a substitute for advice from a qualified lawyer.
