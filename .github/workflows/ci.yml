@@ -12,8 +12,6 @@ contents: read
 jobs:
 test:
 runs-on: ubuntu-latest
-
-```
 services:
   postgres:
     image: pgvector/pgvector:pg16
