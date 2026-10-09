@@ -2,7 +2,7 @@ name: CI/CD
 
 on:
   push:
-    branches: [main, legal-v1]
+    branches: [legal-v1]
   pull_request:
   workflow_dispatch:
 
@@ -17,6 +17,32 @@ jobs:
   test:
     name: Lint & test
     runs-on: ubuntu-latest
+
+    env:
+      DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
+      DAGSHUB_USER: shimaa83
+      # Throwaway test database (same settings as docker-compose.yml)
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: legal_rag
+      POSTGRES_USER: rag_user
+      POSTGRES_PASSWORD: rag_password
+
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18-trixie
+        env:
+          POSTGRES_DB: legal_rag
+          POSTGRES_USER: rag_user
+          POSTGRES_PASSWORD: rag_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U rag_user -d legal_rag"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,6 +52,23 @@ jobs:
 
       - name: Install dependencies
         run: uv sync --frozen
+
+      # Needs the DAGSHUB_USER_TOKEN repo secret (not available on PRs from forks;
+      # without it the dataset tests are skipped by tests/conftest.py).
+      - name: Build dataset (DVC pull + repro)
+        if: env.DAGSHUB_USER_TOKEN != ''
+        run: |
+          REMOTE=$(uvx dvc remote default)
+          uvx dvc remote modify --local "$REMOTE" auth basic
+          uvx dvc remote modify --local "$REMOTE" user "$DAGSHUB_USER"
+          uvx dvc remote modify --local "$REMOTE" password "$DAGSHUB_USER_TOKEN"
+          uvx dvc pull data/raw/egyptian_civil_code.pdf
+          uvx dvc repro
+
+      - name: Enable pgvector extension
+        run: >
+          PGPASSWORD=$POSTGRES_PASSWORD psql -h localhost -U $POSTGRES_USER
+          -d $POSTGRES_DB -c "CREATE EXTENSION IF NOT EXISTS vector;"
 
       # Ruff reports problems but never fails the pipeline.
       - name: Ruff lint
