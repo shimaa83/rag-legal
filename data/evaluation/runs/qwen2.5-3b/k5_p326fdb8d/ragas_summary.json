@@ -1,0 +1,36 @@
+{
+  "top_k": 5,
+  "candidate_k": 20,
+  "generator_model": "qwen2.5:3b",
+  "judge_provider": "gemini",
+  "judge_model": "gemini-3.5-flash-lite",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "retrieval": "hybrid_search",
+  "fusion": "weighted_rrf",
+  "prompt_hash": "326fdb8d",
+  "num_questions": 5,
+  "dvc_data_hash": "5086ef5f16f15d856278db943e58e948",
+  "git_commit": "8b0ea07b622a881195df9f6680de90d01797fe6f",
+  "ragas": {
+    "faithfulness": 0.85,
+    "answer_relevancy": 0.9356345703626225,
+    "context_precision": 0.9999999999,
+    "context_recall": 1.0
+  },
+  "ragas_valid_counts": {
+    "faithfulness": 5,
+    "answer_relevancy": 5,
+    "context_precision": 5,
+    "context_recall": 5
+  },
+  "ragas_failed_counts": {
+    "faithfulness": 0,
+    "answer_relevancy": 0,
+    "context_precision": 0,
+    "context_recall": 0
+  },
+  "retrieval_metrics": {
+    "article_recall_at_5": 1.0,
+    "article_precision_at_5": 0.2
+  }
+}

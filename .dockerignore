@@ -1,0 +1,10 @@
+.git
+.venv
+**pycache**
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.env
+*.pyc
+*.log
+locust_report.html

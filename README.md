@@ -692,6 +692,105 @@ Expected test result:
 ```
 
 ---
+### vLLM Hardware and Local Development
+
+vLLM is planned as the generative model serving layer for the production RAG architecture.
+
+The current development environment is Windows and CPU-only, so vLLM is **not used for local inference**. The local RAG pipeline can be developed and tested independently of vLLM, including PostgreSQL hybrid retrieval, RRF, reranking, and evaluation.
+
+For the final serving/deployment stage, vLLM should be deployed in a Linux-based environment with a compatible GPU and sufficient VRAM for the selected generative model.
+
+The planned architecture is:
+
+```text
+FastAPI /ask
+     ↓
+BentoML RAG Service
+     ↓
+PostgreSQL Hybrid Search
+     ↓
+RRF
+     ↓
+Reranker
+     ↓
+vLLM
+     ↓
+Generative LLM
+```
+
+## RAG Pipeline
+
+1. **Question:** Receive a non-empty Arabic legal question.
+2. **Hybrid retrieval:** Search the Egyptian Civil Code using PostgreSQL hybrid search (`pgvector` vector search + `tsvector` keyword search).
+3. **Rank results:** Combine retrieval rankings with weighted Reciprocal Rank Fusion (RRF), using the configured `candidate_k` and `top_k`.
+4. **Build context:** Prepare retrieved article texts and citations, excluding repealed articles and empty text.
+5. **Generate:** Use the local Ollama model (`qwen2.5:3b` by default) to draft an answer grounded in the retrieved context.
+6. **Verify:** Send the question, legal context, and draft answer to Gemini for review; return one final answer and its sources.
+7. **Trace:** Record the RAG operation in Langfuse.
+
+## RAGAS Evaluation
+
+1. Load the Arabic evaluation dataset from `data/evaluation/ragas_dataset.json`.
+2. Run the RAG pipeline for each question using the configured generator, prompt, and retrieval settings.
+3. Evaluate answers and retrieved contexts with **Faithfulness**, **Answer Relevancy**, **Context Precision**, and **Context Recall**.
+4. Measure article retrieval with **Article Recall@5** and **Article Precision@5**.
+5. Save per-question results, summary metrics, and errors under `data/evaluation/runs/`; log parameters, metrics, prompt, and artifacts to MLflow/DagsHub.
+
+## RAG Experiment Comparison
+
+| Experiment | Questions | Faithfulness | Answer Relevancy | Context Precision | Context Recall | Article Recall@5 | Article Precision@5 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Successful baseline | 20 | 0.3067 | 0.0456 | 0.8857 | 1.0000 | 1.0000 | 0.2000 |
+| Prompt 3 | 5 | 0.4667 | 0.5736 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
+| Prompt 4 | 5 | 0.5500 | 0.8941 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
+| Updated prompt | 5 | 0.8500 | 0.9356 | 1.0000 | 1.0000 | 1.0000 | 0.2000 |
+
+**Latest run status:** All four RAGAS metrics were valid for all 5 questions; each metric had 0 failed evaluations. `sample_faithfulness=1.0000`, `sample_answer_relevancy=0.8368`, `sample_context_precision≈1.0000`, and `sample_context_recall=1.0000` were also logged separately.
+
+**Interpretation:** The updated prompt improved faithfulness and answer relevancy in this five-question run. Since the sample is small, evaluate it on the same larger dataset as previous runs before treating the improvement as conclusive. Article Precision@5 remains 0.20, so retrieval ranking/relevance still needs investigation.
+
+## BentoML Service
+
+The BentoML service is currently running locally at:
+
+- **Local URL:** http://localhost:3002/
+
+This address is local to the machine running BentoML and is not a public deployment URL. Use the service's configured API route to submit a question; the root URL alone does not confirm which endpoints are available.
+
+### Locust Load Testing
+
+We used Locust to perform an initial load test of the Arabic Legal RAG API served through BentoML.
+
+**Test configuration**
+
+* Endpoint: `POST /ask`
+* Target URL: `http://localhost:3002`
+* Request payload: A randomly selected legal question with `top_k=5`
+* Timeout: 300 seconds
+* Questions: 6 predefined Egyptian Civil Code questions
+
+**Initial Results**
+
+| Metric                |         Result |
+| --------------------- | -------------: |
+| Total Requests        |              7 |
+| Failed Requests       |              0 |
+| Median Response Time  |     108,000 ms |
+| Average Response Time |   99,630.56 ms |
+| 95th Percentile (P95) |     151,000 ms |
+| 99th Percentile (P99) |     151,000 ms |
+| Minimum Response Time |      28,048 ms |
+| Maximum Response Time |     150,746 ms |
+| Average Response Size | 1,985.71 bytes |
+
+**Observations**
+
+* All 7 requests completed successfully, with no failures reported by Locust.
+* The average response time was approximately 99.63 seconds, indicating a significant latency concern.
+* The test is preliminary because the sample size is small.
+* Further profiling is required to identify latency contributions from retrieval, Ollama generation, and Gemini calls.
+
+These results represent an initial local test and should not be interpreted as production capacity or a final performance benchmark.
 
 ## 20. License
 

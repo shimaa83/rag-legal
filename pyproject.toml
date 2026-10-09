@@ -8,17 +8,25 @@ authors = [
 ]
 requires-python = ">=3.13"
 dependencies = [
+    "bentoml>=1.4.39",
     "dagshub>=0.7.2",
+    "google-genai>=2.29.0",
+    "langchain-community==0.4.1",
+    "langfuse>=4.17.0",
     "mlflow>=3.17.0",
     "pdfplumber>=0.11.10",
     "pgvector>=0.5.0",
     "psycopg[binary]>=3.3.6",
     "python-dotenv>=1.2.4",
+    "ragas>=0.4.3",
     "sentence-transformers>=6.1.0",
 ]
 
 [project.scripts]
 legal-rag = "legal_rag:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
 
 [build-system]
 requires = ["uv_build>=0.12.5,<0.13.0"]
@@ -28,6 +36,7 @@ build-backend = "uv_build"
 dev = [
     "cryptography>=44.0.0",
     "dvc[gdrive]>=3.67.1",
+    "locust>=2.46.7",
     "pyopenssl>=25.0.0",
     "pytest>=9.1.1",
 ]

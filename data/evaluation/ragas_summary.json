@@ -1,0 +1,22 @@
+{
+  "num_questions": 20,
+  "top_k": 5,
+  "candidate_k": 20,
+  "generator_model": "qwen2.5:3b",
+  "evaluator_model": "qwen2.5:3b",
+  "embedding_model": "intfloat/multilingual-e5-small",
+  "retrieval": "hybrid_search",
+  "fusion": "weighted_rrf",
+  "dvc_data_hash": "5086ef5f16f15d856278db943e58e948",
+  "git_commit": "8b0ea07b622a881195df9f6680de90d01797fe6f",
+  "ragas": {
+    "faithfulness": 0.30666666666666664,
+    "answer_relevancy": 0.04556929211489198,
+    "context_precision": 0.8856944444123276,
+    "context_recall": 1.0
+  },
+  "retrieval_metrics": {
+    "article_recall_at_5": 1.0,
+    "article_precision_at_5": 0.2
+  }
+}

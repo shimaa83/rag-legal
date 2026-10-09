@@ -12,3 +12,18 @@ wheels/
 # MLflow local tracking
 mlflow.db
 mlruns/
+mlartifacts/
+
+# Evaluation caches
+data/evaluation/*cache*.json
+
+# Test and tooling caches
+.pytest_cache/
+.ruff_cache/
+
+# Local logs and reports
+*.log
+locust_report.html
+# Nested RAGAS cache files
+**/*cache*.json
+**/*errors*.json
