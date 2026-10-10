@@ -41,14 +41,14 @@ DAGSHUB_MLFLOW_URI = (
 )
 MLFLOW_TRACKING_URI = DAGSHUB_MLFLOW_URI if USE_DAGSHUB else LOCAL_MLFLOW_URI
 
-MLFLOW_EXPERIMENT_NAME = "legal-rag_using_ranker"
+MLFLOW_EXPERIMENT_NAME = "legal-rag_using_ranker_50_questions"
 MLFLOW_RUN_NAME = None
 
 # ============================================================
 # Experiment Settings
 # ============================================================
 
-NUM_QUESTIONS = 5
+NUM_QUESTIONS = 50
 
 # Retrieval
 TOP_K = 5
