@@ -818,6 +818,25 @@ Add the image only after saving the actual screenshot at that path. The local Gr
 * Request and service metrics do not replace RAGAS quality evaluation or Langfuse request tracing.
 * Production alerting, deployment-wide monitoring, and retrieval-quality drift monitoring remain future work.
 
+### Canary Rollout (Planned)
+
+Canary rollout is a planned deployment strategy for gradually introducing a new version of the Arabic Legal RAG system while keeping the current stable version available.
+
+The goal is to validate a new model, prompt, or retrieval configuration with a small portion of incoming traffic before making it the default version.
+
+**Planned rollout strategy:**
+
+1. **Stable version (v1):** Continue serving requests using the current stable RAG version.
+2. **Canary version (v2):** Deploy a new version with an updated prompt, generator model, or retrieval configuration.
+3. **Traffic splitting:** Initially route a small percentage of requests (for example, 10%) to v2 while keeping the remaining traffic on v1.
+4. **Monitoring:** Use Prometheus and Grafana to monitor request counts, HTTP errors, and response latency where suitable metrics are available.
+5. **Quality evaluation:** Use RAGAS to compare answer faithfulness, answer relevancy, and retrieval quality between versions.
+6. **Promotion or rollback:** Gradually increase v2 traffic if the results are acceptable, or return traffic to v1 if the new version causes regressions.
+
+**Implementation status:** Planned — traffic splitting, automated rollout decisions, and rollback mechanisms have not yet been implemented.
+
+This section documents the intended deployment strategy. The current monitoring setup provides a foundation for observing the service, but monitoring alone does not implement a canary rollout.
+
 ## 18. Locust Load Testing
 
 An initial Locust test was performed against the locally hosted BentoML RAG API.
