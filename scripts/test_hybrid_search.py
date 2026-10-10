@@ -1,6 +1,5 @@
 from legal_rag.retrieval import hybrid_search
 
-
 question = "ما هي شروط العقد؟"
 
 results = hybrid_search(

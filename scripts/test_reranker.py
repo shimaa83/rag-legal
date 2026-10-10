@@ -8,7 +8,6 @@ from legal_rag.embeddings import ArabicEmbedder
 from legal_rag.reranker import ArabicReranker
 from legal_rag.retrieval import hybrid_search
 
-
 # ---------------------------------------------------------
 # Paths
 # ---------------------------------------------------------

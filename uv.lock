@@ -2540,20 +2540,6 @@ wheels = [
 ]
 
 [[package]]
-name = "langchain-huggingface"
-version = "1.2.3"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "huggingface-hub" },
-    { name = "langchain-core" },
-    { name = "tokenizers" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/fd/35/17f59f4a1202de947797b76a1b898a0e040dd3ee7060255d0efbeebeb0b1/langchain_huggingface-1.2.3.tar.gz", hash = "sha256:9848339ce197d48dd95668c2aac32a4523ca879840a31ebcef59a5b616315826", size = 282933, upload-time = "2026-10-07T20:09:49.481Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/66/f8/222ada54c99a512bd497f3526f6c14a55f6c0bc39ba9a05a4170ebbfe561/langchain_huggingface-1.2.3-py3-none-any.whl", hash = "sha256:d687cd9554a20edb6af86aceae2465b4d0f73557acfb9b9c6778cb0e6d5929a7", size = 34219, upload-time = "2026-10-07T20:09:48.134Z" },
-]
-
-[[package]]
 name = "langchain-openai"
 version = "1.6.7"
 source = { registry = "https://pypi.org/simple" }
@@ -2704,9 +2690,7 @@ dependencies = [
     { name = "bentoml" },
     { name = "dagshub" },
     { name = "google-genai" },
-    { name = "huggingface-hub" },
     { name = "langchain-community" },
-    { name = "langchain-huggingface" },
     { name = "langfuse" },
     { name = "mlflow" },
     { name = "pdfplumber" },
@@ -2731,9 +2715,7 @@ requires-dist = [
     { name = "bentoml", specifier = ">=1.4.39" },
     { name = "dagshub", specifier = ">=0.7.2" },
     { name = "google-genai", specifier = ">=2.29.0" },
-    { name = "huggingface-hub", specifier = ">=1.33.0" },
     { name = "langchain-community", specifier = "==0.4.1" },
-    { name = "langchain-huggingface", specifier = ">=1.2.3" },
     { name = "langfuse", specifier = ">=4.17.0" },
     { name = "mlflow", specifier = ">=3.17.0" },
     { name = "pdfplumber", specifier = ">=0.11.10" },

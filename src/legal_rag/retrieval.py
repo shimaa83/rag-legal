@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 import re
@@ -8,26 +9,17 @@ from legal_rag.embeddings import ArabicEmbedder
 
 
 ARABIC_STOPWORDS = {
-    "ما",
-    "ماذا",
-    "هي",
-    "هو",
-    "هل",
-    "من",
-    "في",
-    "على",
-    "إلى",
-    "عن",
-    "و",
-    "أو",
-    "أن",
-    "إن",
-    "لا",
-    "لم",
-    "لن",
-    "مع",
-    "هذا",
-    "هذه",
+    "ما", "ماذا", "هي", "هو", "هل", "من", "في",
+    "على", "إلى", "عن", "و", "أو", "أن", "إن",
+    "لا", "لم", "لن", "مع", "هذا", "هذه",
+}
+
+ENGLISH_STOPWORDS = {
+    "a", "an", "the", "is", "are", "was", "were",
+    "what", "which", "who", "how", "does", "do",
+    "of", "in", "on", "at", "to", "for", "from",
+    "with", "by", "under", "and", "or", "as", "be",
+    "can", "could", "should", "would", "about",
 }
 
 
@@ -36,7 +28,10 @@ def vector_search(
     top_k: int = 5,
     embedder: ArabicEmbedder | None = None,
 ) -> list[dict[str, Any]]:
-    """Retrieve the most similar legal chunks using pgvector."""
+    """Retrieve similar legal chunks using multilingual embeddings."""
+
+    if top_k < 1:
+        raise ValueError("top_k must be at least 1.")
 
     if embedder is None:
         embedder = ArabicEmbedder()
@@ -48,6 +43,7 @@ def vector_search(
             chunk_id,
             article_number,
             text_ar_normalized,
+            text_en,
             citation,
             source_page,
             is_repealed,
@@ -58,28 +54,27 @@ def vector_search(
         LIMIT %s;
     """
 
-    with get_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                query,
-                (
-                    query_embedding,
-                    query_embedding,
-                    top_k,
-                ),
-            )
-
-            rows = cursor.fetchall()
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            query,
+            (
+                query_embedding,
+                query_embedding,
+                top_k,
+            ),
+        )
+        rows = cursor.fetchall()
 
     return [
         {
             "chunk_id": row[0],
             "article_number": row[1],
             "text_ar_normalized": row[2],
-            "citation": row[3],
-            "source_page": row[4],
-            "is_repealed": row[5],
-            "similarity": float(row[6]),
+            "text_en": row[3],
+            "citation": row[4],
+            "source_page": row[5],
+            "is_repealed": row[6],
+            "similarity": float(row[7]),
         }
         for row in rows
     ]
@@ -89,49 +84,53 @@ def keyword_search(
     question: str,
     top_k: int = 20,
 ) -> list[dict[str, Any]]:
-    """Retrieve legal chunks using PostgreSQL keyword search.
+    """Search Arabic and English keywords using PostgreSQL full-text search."""
 
-    Strategy:
-    1. Try AND matching for all meaningful terms.
-    2. Fall back to OR matching if AND returns no results.
-    """
+    if top_k < 1:
+        raise ValueError("top_k must be at least 1.")
 
     terms = re.findall(
-        r"[\u0600-\u06FF]+",
+        r"[\u0600-\u06FF]+|[A-Za-z0-9]+",
         question,
     )
 
-    meaningful_terms = [
-        term
-        for term in terms
-        if term not in ARABIC_STOPWORDS
-    ]
+    meaningful_terms = []
+
+    for term in terms:
+        normalized_term = term.lower()
+
+        if normalized_term in ARABIC_STOPWORDS:
+            continue
+
+        if normalized_term in ENGLISH_STOPWORDS:
+            continue
+
+        meaningful_terms.append(normalized_term)
+
+    meaningful_terms = list(dict.fromkeys(meaningful_terms))
 
     if not meaningful_terms:
         return []
 
-    # Remove duplicate terms while preserving order.
-    meaningful_terms = list(
-        dict.fromkeys(meaningful_terms)
-    )
+    # Escape characters with special meaning in PostgreSQL tsquery.
+    safe_terms = [
+        re.sub(r"[^a-zA-Z0-9_\u0600-\u06FF]", "", term)
+        for term in meaningful_terms
+    ]
+    safe_terms = [term for term in safe_terms if term]
 
-    # Strict search:
-    # every meaningful term must exist.
-    and_tsquery = " & ".join(
-        meaningful_terms
-    )
+    if not safe_terms:
+        return []
 
-    # Fallback search:
-    # at least one meaningful term must exist.
-    or_tsquery = " | ".join(
-        meaningful_terms
-    )
+    and_tsquery = " & ".join(safe_terms)
+    or_tsquery = " | ".join(safe_terms)
 
     query = """
         SELECT
             chunk_id,
             article_number,
             text_ar_normalized,
+            text_en,
             citation,
             source_page,
             is_repealed,
@@ -145,42 +144,30 @@ def keyword_search(
         LIMIT %s;
     """
 
-    with get_connection() as connection:
-        with connection.cursor() as cursor:
-            # First attempt: AND search.
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            query,
+            (and_tsquery, and_tsquery, top_k),
+        )
+        rows = cursor.fetchall()
+
+        if not rows:
             cursor.execute(
                 query,
-                (
-                    and_tsquery,
-                    and_tsquery,
-                    top_k,
-                ),
+                (or_tsquery, or_tsquery, top_k),
             )
-
             rows = cursor.fetchall()
-
-            # Fallback: OR search.
-            if not rows:
-                cursor.execute(
-                    query,
-                    (
-                        or_tsquery,
-                        or_tsquery,
-                        top_k,
-                    ),
-                )
-
-                rows = cursor.fetchall()
 
     return [
         {
             "chunk_id": row[0],
             "article_number": row[1],
             "text_ar_normalized": row[2],
-            "citation": row[3],
-            "source_page": row[4],
-            "is_repealed": row[5],
-            "score": float(row[6]),
+            "text_en": row[3],
+            "citation": row[4],
+            "source_page": row[5],
+            "is_repealed": row[6],
+            "score": float(row[7]),
         }
         for row in rows
     ]
@@ -198,14 +185,7 @@ def reciprocal_rank_fusion(
 
     fused: dict[str, dict[str, Any]] = {}
 
-    # -----------------------------------------------------
-    # Vector results
-    # -----------------------------------------------------
-
-    for rank, result in enumerate(
-        vector_results,
-        start=1,
-    ):
+    for rank, result in enumerate(vector_results, start=1):
         chunk_id = result["chunk_id"]
 
         if chunk_id not in fused:
@@ -217,20 +197,11 @@ def reciprocal_rank_fusion(
             }
 
         fused[chunk_id]["rrf_score"] += (
-            vector_weight
-            / (rrf_k + rank)
+            vector_weight / (rrf_k + rank)
         )
-
         fused[chunk_id]["vector_rank"] = rank
 
-    # -----------------------------------------------------
-    # Keyword results
-    # -----------------------------------------------------
-
-    for rank, result in enumerate(
-        keyword_results,
-        start=1,
-    ):
+    for rank, result in enumerate(keyword_results, start=1):
         chunk_id = result["chunk_id"]
 
         if chunk_id not in fused:
@@ -242,15 +213,9 @@ def reciprocal_rank_fusion(
             }
 
         fused[chunk_id]["rrf_score"] += (
-            keyword_weight
-            / (rrf_k + rank)
+            keyword_weight / (rrf_k + rank)
         )
-
         fused[chunk_id]["keyword_rank"] = rank
-
-    # -----------------------------------------------------
-    # Sort final results
-    # -----------------------------------------------------
 
     ranked = sorted(
         fused.values(),
@@ -262,14 +227,13 @@ def reciprocal_rank_fusion(
 
     for item in ranked[:top_k]:
         result = dict(item["result"])
-
         result["rrf_score"] = item["rrf_score"]
         result["vector_rank"] = item["vector_rank"]
         result["keyword_rank"] = item["keyword_rank"]
-
         final_results.append(result)
 
     return final_results
+
 
 def hybrid_search(
     question: str,
@@ -280,7 +244,7 @@ def hybrid_search(
     keyword_weight: float = 1.0,
     embedder: ArabicEmbedder | None = None,
 ) -> list[dict[str, Any]]:
-    """Retrieve legal chunks using weighted Hybrid Search."""
+    """Retrieve legal chunks using multilingual weighted hybrid search."""
 
     vector_results = vector_search(
         question=question,

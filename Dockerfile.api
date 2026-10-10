@@ -1,0 +1,24 @@
+
+FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
+
+WORKDIR /app
+
+ENV UV_COMPILE_BYTECODE=1 \
+    UV_LINK_MODE=copy \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app/src \
+    HF_HOME=/opt/huggingface
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY . .
+RUN uv sync --frozen --no-dev --no-install-project
+
+# Cache the embedding model in the image.
+RUN uv run --no-sync python -c \
+    "from sentence_transformers import SentenceTransformer; SentenceTransformer('intfloat/multilingual-e5-small')"
+
+EXPOSE 8000
+
+CMD ["uv", "run", "--no-sync", "uvicorn", "legal_rag.api:app", "--host", "0.0.0.0", "--port", "8000"]

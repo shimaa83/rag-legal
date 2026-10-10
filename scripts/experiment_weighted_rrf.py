@@ -11,7 +11,6 @@ from dotenv import load_dotenv
 from legal_rag.embeddings import ArabicEmbedder
 from legal_rag.retrieval import hybrid_search
 
-
 # ---------------------------------------------------------
 # Environment
 # ---------------------------------------------------------

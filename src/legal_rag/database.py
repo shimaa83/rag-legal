@@ -6,7 +6,6 @@ import psycopg
 from dotenv import load_dotenv
 from pgvector.psycopg import register_vector
 
-
 load_dotenv()
 
 

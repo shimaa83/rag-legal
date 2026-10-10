@@ -1,6 +1,5 @@
 from legal_rag.retrieval import keyword_search
 
-
 question = "ما هي شروط العقد؟"
 
 results = keyword_search(

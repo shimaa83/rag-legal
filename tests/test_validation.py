@@ -8,8 +8,6 @@ from legal_rag.config import (
     REPEALED_ARTICLES,
 )
 
-
-
 # ============================================================
 # Dataset Validation Checks
 # ============================================================

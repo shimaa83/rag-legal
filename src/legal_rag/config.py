@@ -41,7 +41,7 @@ DAGSHUB_MLFLOW_URI = (
 )
 MLFLOW_TRACKING_URI = DAGSHUB_MLFLOW_URI if USE_DAGSHUB else LOCAL_MLFLOW_URI
 
-MLFLOW_EXPERIMENT_NAME = "legal-rag_a5"
+MLFLOW_EXPERIMENT_NAME = "legal-rag_using_ranker"
 MLFLOW_RUN_NAME = None
 
 # ============================================================

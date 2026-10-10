@@ -175,7 +175,7 @@ def parse_english(lines):
 
             expect = None
             for tk in toks:
-                if re.search(r'repealed', tk, re.I):
+                if re.search(r'repealed', tk, re.IGNORECASE):
                     mm = re.search(r'(\d+)\s*[-–]\s*(\d+)', tk)
                     repeal_notes.append((int(mm.group(1)), int(mm.group(2)), l['p'], tk))
                     expect = None
@@ -193,9 +193,9 @@ def parse_english(lines):
                     continue
                 if re.match(r'^(FIRST|SECOND) PART$', tk):      expect = 'part';    continue
                 if re.match(r'^BOOK [IVX]+$', tk):              expect = 'book';    continue
-                if re.match(r'^chapter [IVX]+\.?$', tk, re.I):  expect = 'chapter'; continue
-                if re.match(r'^section [IVX]+\.?$', tk, re.I):  expect = 'section'; continue
-                mm = re.match(r'^section [IVX]+\.?\s+(.+)$', tk, re.I)
+                if re.match(r'^chapter [IVX]+\.?$', tk, re.IGNORECASE):  expect = 'chapter'; continue
+                if re.match(r'^section [IVX]+\.?$', tk, re.IGNORECASE):  expect = 'section'; continue
+                mm = re.match(r'^section [IVX]+\.?\s+(.+)$', tk, re.IGNORECASE)
                 if mm:
                     if prelim: state.update(chapter=mm.group(1), section=None, main=None, sub=None)
                     else:      state.update(section=mm.group(1), main=None, sub=None)

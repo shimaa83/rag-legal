@@ -1,5 +1,5 @@
-from legal_rag.ingestion import ingest_one_chunk
 from legal_rag.database import get_connection
+from legal_rag.ingestion import ingest_one_chunk
 
 
 def test_insert_one_chunk() -> None:
@@ -20,10 +20,9 @@ def test_insert_one_chunk() -> None:
 
     ingest_one_chunk(chunk)
 
-    with get_connection() as connection:
-        with connection.cursor() as cursor:
-            cursor.execute(
-                """
+    with get_connection() as connection, connection.cursor() as cursor:
+        cursor.execute(
+            """
                 SELECT
                     article_number,
                     vector_dims(embedding),
@@ -31,10 +30,10 @@ def test_insert_one_chunk() -> None:
                 FROM legal_chunks
                 WHERE chunk_id = %s
                 """,
-                (chunk["chunk_id"],),
-            )
+            (chunk["chunk_id"],),
+        )
 
-            result = cursor.fetchone()
+        result = cursor.fetchone()
 
     assert result is not None
     assert result[0] == 999999

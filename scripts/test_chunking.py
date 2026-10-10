@@ -3,7 +3,6 @@ from pathlib import Path
 
 from legal_rag.chunking import chunk_articles
 
-
 INPUT_PATH = Path("data/processed/civil_code.json")
 
 

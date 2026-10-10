@@ -1,4 +1,4 @@
- 
+
 name: CI/CD
 
 on:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   test:
-    name: Lint & test
+    name: Lint, test & validate
     runs-on: ubuntu-latest
 
     env:
@@ -55,13 +55,18 @@ jobs:
       - name: Install dependencies
         run: uv sync --frozen
 
-      - name: Build dataset (DVC pull + repro)
+      - name: Pull and build DVC dataset
         if: ${{ env.DAGSHUB_USER_TOKEN != '' }}
+        shell: bash
         run: |
+          set -e
+
           REMOTE=$(uvx dvc remote default)
+
           uvx dvc remote modify --local "$REMOTE" auth basic
           uvx dvc remote modify --local "$REMOTE" user "$DAGSHUB_USER"
           uvx dvc remote modify --local "$REMOTE" password "$DAGSHUB_USER_TOKEN"
+
           uvx dvc pull data/raw/egyptian_civil_code.pdf
           uvx dvc repro
 
@@ -69,31 +74,39 @@ jobs:
         env:
           PGPASSWORD: ${{ env.POSTGRES_PASSWORD }}
         run: |
-          psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -d "$POSTGRES_DB" -v ON_ERROR_STOP=1 -f sql/schema.sql
+          psql \
+            -h "$POSTGRES_HOST" \
+            -p "$POSTGRES_PORT" \
+            -U "$POSTGRES_USER" \
+            -d "$POSTGRES_DB" \
+            -v ON_ERROR_STOP=1 \
+            -f sql/schema.sql
 
       - name: Ruff lint
         continue-on-error: true
-        run: uvx ruff check src
+        run: uvx ruff check src tests
 
       - name: Ruff format check
         continue-on-error: true
-        run: uvx ruff format --check src
+        run: uvx ruff format --check src tests
 
-      - name: Compile check
+      - name: Compile Python files
         run: uv run python -m compileall -q src
 
-      - name: Tests
+      - name: Run tests
         run: |
           if [ -d tests ]; then
             uv run --with pytest pytest -q
           else
-            echo "No tests/ directory, skipping."
+            echo "No tests directory found; skipping tests."
           fi
 
   docker:
-    name: Build & push image
+    name: Build & push Docker images
     needs: test
     runs-on: ubuntu-latest
+
+    if: github.event_name != 'pull_request'
 
     permissions:
       contents: read
@@ -103,41 +116,92 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install project dependencies
+        run: uv sync --frozen
+
+      - name: Prepare DVC dataset
+        env:
+          DAGSHUB_USER_TOKEN: ${{ secrets.DAGSHUB_USER_TOKEN }}
+          DAGSHUB_USER: shimaa83
+        shell: bash
+        run: |
+          set -e
+
+          if [ -z "$DAGSHUB_USER_TOKEN" ]; then
+            echo "DAGSHUB_USER_TOKEN is required for the Docker build."
+            exit 1
+          fi
+
+          REMOTE=$(uvx dvc remote default)
+
+          uvx dvc remote modify --local "$REMOTE" auth basic
+          uvx dvc remote modify --local "$REMOTE" user "$DAGSHUB_USER"
+          uvx dvc remote modify --local "$REMOTE" password "$DAGSHUB_USER_TOKEN"
+
+          uvx dvc pull data/raw/egyptian_civil_code.pdf
+          uvx dvc repro
+
+      - name: Verify Docker build inputs
+        run: |
+          test -s data/processed/civil_code.json
+          test -s legal_rag.dump
+          test -f Dockerfile.api
+          test -f Dockerfile.db
+          test -f docker/restore-dump.sh
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Log in to GHCR
-        if: github.event_name != 'pull_request'
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Image metadata
-        id: meta
+      - name: API image metadata
+        id: api_meta
         uses: docker/metadata-action@v5
         with:
-          images: |
-            ghcr.io/${{ github.repository }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/rag-legal
+          images: ghcr.io/${{ github.repository }}-api
           tags: |
             type=sha
             type=ref,event=branch
             type=raw,value=latest,enable={{is_default_branch}}
 
-      - name: Build and push
+      - name: Database image metadata
+        id: db_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/${{ github.repository }}-db
+          tags: |
+            type=sha
+            type=ref,event=branch
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push database image
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          file: Dockerfile.db
+          push: true
+          tags: ${{ steps.db_meta.outputs.tags }}
+          labels: ${{ steps.db_meta.outputs.labels }}
+          cache-from: type=gha,scope=legal-rag-db
+          cache-to: type=gha,mode=max,scope=legal-rag-db
+
+      - name: Build and push API image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: Dockerfile.api
+          push: true
+          tags: ${{ steps.api_meta.outputs.tags }}
+          labels: ${{ steps.api_meta.outputs.labels }}
+          cache-from: type=gha,scope=legal-rag-api
+          cache-to: type=gha,mode=max,scope=legal-rag-api

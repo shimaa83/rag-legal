@@ -1,0 +1,7 @@
+
+FROM pgvector/pgvector:pg18-trixie
+
+COPY legal_rag.dump /docker-entrypoint-initdb.d/legal_rag.dump
+COPY docker/restore-dump.sh /docker-entrypoint-initdb.d/20-restore-dump.sh
+
+RUN chmod +x /docker-entrypoint-initdb.d/20-restore-dump.sh

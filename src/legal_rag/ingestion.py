@@ -1,3 +1,4 @@
+
 from __future__ import annotations
 
 from typing import Any
@@ -39,7 +40,11 @@ INSERT_QUERY = """
         %(embedding)s,
         to_tsvector(
             'simple',
-            COALESCE(%(text_ar_normalized)s, '')
+            concat_ws(
+                ' ',
+                COALESCE(%(text_ar_normalized)s, ''),
+                COALESCE(%(text_en)s, '')
+            )
         )
     )
     ON CONFLICT (chunk_id)
@@ -60,11 +65,33 @@ INSERT_QUERY = """
 """
 
 
+def get_embedding_text(chunk: dict[str, Any]) -> str:
+    """Combine Arabic and English content for multilingual embeddings."""
+
+    text_ar = str(chunk.get("text_ar_normalized") or "").strip()
+    text_en = str(chunk.get("text_en") or "").strip()
+
+    parts = []
+
+    if text_ar:
+        parts.append(f"Arabic legal text: {text_ar}")
+
+    if text_en:
+        parts.append(f"English translation: {text_en}")
+
+    if not parts:
+        raise ValueError(
+            f"Chunk {chunk.get('chunk_id')} has no text to embed."
+        )
+
+    return "\n".join(parts)
+
+
 def insert_chunk(
     chunk: dict[str, Any],
     embedding: list[float],
 ) -> None:
-    """Insert one legal chunk into PostgreSQL."""
+    """Insert or update one legal chunk."""
 
     with get_connection() as connection:
         with connection.cursor() as cursor:
@@ -79,14 +106,17 @@ def insert_chunk(
         connection.commit()
 
 
-def ingest_one_chunk(chunk: dict[str, Any]) -> None:
-    """Generate and store one chunk embedding."""
+def ingest_one_chunk(
+    chunk: dict[str, Any],
+    embedder: ArabicEmbedder | None = None,
+) -> None:
+    """Generate and store one multilingual embedding."""
 
-    embedder = ArabicEmbedder()
+    if embedder is None:
+        embedder = ArabicEmbedder()
 
-    embedding = embedder.embed_documents(
-        [chunk["text_ar_normalized"]]
-    )[0]
+    text = get_embedding_text(chunk)
+    embedding = embedder.embed_documents([text])[0]
 
     insert_chunk(chunk, embedding)
 
@@ -96,40 +126,36 @@ def ingest_chunks(
     embedder: ArabicEmbedder,
     batch_size: int = 32,
 ) -> None:
-    """Generate embeddings and store legal chunks in batches."""
+    """Generate multilingual embeddings and store chunks in batches."""
 
-    with get_connection() as connection:
-        with connection.cursor() as cursor:
-            for start in range(0, len(chunks), batch_size):
-                batch = chunks[start : start + batch_size]
+    if batch_size < 1:
+        raise ValueError("batch_size must be at least 1.")
 
-                texts = [
-                    chunk["text_ar_normalized"]
-                    for chunk in batch
-                ]
+    with get_connection() as connection, connection.cursor() as cursor:
+        for start in range(0, len(chunks), batch_size):
+            batch = chunks[start : start + batch_size]
 
-                embeddings = embedder.embed_documents(texts)
+            texts = [
+                get_embedding_text(chunk)
+                for chunk in batch
+            ]
 
-                rows = [
-                    {
-                        **chunk,
-                        "embedding": embedding,
-                    }
-                    for chunk, embedding in zip(
-                        batch,
-                        embeddings,
-                        strict=True,
-                    )
-                ]
+            embeddings = embedder.embed_documents(texts)
 
-                cursor.executemany(
-                    INSERT_QUERY,
-                    rows,
+            rows = [
+                {
+                    **chunk,
+                    "embedding": embedding,
+                }
+                for chunk, embedding in zip(
+                    batch,
+                    embeddings,
+                    strict=True,
                 )
+            ]
 
-                connection.commit()
+            cursor.executemany(INSERT_QUERY, rows)
+            connection.commit()
 
-                end = start + len(batch)
-                print(
-                    f"Ingested {end}/{len(chunks)} chunks"
-                )
+            end = start + len(batch)
+            print(f"Ingested {end}/{len(chunks)} chunks")
