@@ -2,7 +2,7 @@
 
 An MLOps-oriented Retrieval-Augmented Generation (RAG) system for the Egyptian Civil Code, focused on Arabic legal text processing, reproducible data pipelines, PostgreSQL hybrid retrieval, RAG evaluation, and experiment tracking.
 
-The project combines DVC, PostgreSQL, pgvector, hybrid search, Reciprocal Rank Fusion (RRF), Ollama, Gemini verification, MLflow/DagsHub, Langfuse, and BentoML.
+The project combines DVC, PostgreSQL, pgvector, hybrid search, Reciprocal Rank Fusion (RRF), Ollama, Gemini verification, MLflow/DagsHub, Langfuse, BentoML, Prometheus, and Grafana.
 
 ## 1. Project Overview
 
@@ -51,7 +51,7 @@ Egyptian Civil Code PDF
   Answer with Legal Sources
 ```
 
-Langfuse provides tracing, MLflow tracks evaluation experiments, and DagsHub hosts the DVC data remote and MLflow tracking.
+Langfuse provides tracing, MLflow tracks evaluation experiments, and DagsHub hosts the DVC data remote and MLflow tracking. Prometheus collects BentoML service metrics, and Grafana visualizes request activity and performance.
 
 ## 2. Project Status
 
@@ -73,6 +73,8 @@ Langfuse provides tracing, MLflow tracks evaluation experiments, and DagsHub hos
 * RAGAS evaluation and MLflow/DagsHub experiment tracking.
 * BentoML serving endpoint.
 * Docker image build and publishing workflow.
+* Local Prometheus metrics collection from BentoML.
+* Grafana monitoring dashboard for request counts, error counts, and request rate.
 
 ### Current serving setup
 
@@ -84,14 +86,30 @@ The API documentation is available at:
 
 `http://localhost:3002/#/Service%20APIs/LegalRAG__ask`
 
+### Current monitoring setup
+
+The local monitoring stack is running through Docker Compose.
+
+| Service | Local URL |
+|---|---|
+| BentoML | http://localhost:3002 |
+| Prometheus | http://localhost:9093 |
+| Prometheus Targets | http://localhost:9093/targets |
+| Grafana | http://localhost:3003 |
+
+The `legal-rag-bentoml` Prometheus target was verified as `UP`. The `bentoml_service_request_total` metric was also tested with successful `/ask` requests.
+
+These addresses are local development URLs, not public links accessible to remote reviewers.
+
 ### Remaining work
 
 * Larger and more consistent RAGAS evaluation runs.
 * Recording the exact DVC dataset version in every evaluation run.
 * Performance optimization and repeated load testing.
-* Production deployment and monitoring.
+* Production deployment and production-grade monitoring.
 * Further integration and benchmarking of the reranker.
 * Verification of the complete Docker deployment on a clean machine.
+* Additional monitoring for latency and retrieval quality where supported by available metrics.
 
 The existence of a component does not necessarily mean it is integrated into the live serving path. In particular, the reranker should be verified against the current retrieval and serving code before assuming that every request passes through it.
 
@@ -137,6 +155,8 @@ rag-legal/
 │       ├── retrieval.py
 │       └── service.py
 ├── tests/
+├── monitoring/
+│   └── prometheus.yml
 ├── dvc.yaml
 ├── dvc.lock
 ├── docker-compose.yml
@@ -160,7 +180,7 @@ For running from source:
 * Access to the DagsHub DVC remote if the source PDF must be downloaded
 * The required credentials for any enabled external services
 
-PostgreSQL with pgvector is provided through Docker Compose.
+PostgreSQL with pgvector, Prometheus, and Grafana are provided through Docker Compose.
 
 ## 5. Quick Start — Run from GitHub
 
@@ -279,7 +299,29 @@ Submit the Arabic question:
 
 Review the generated answer and its source citations.
 
-### Step 10 — Run tests
+### Step 10 — Start monitoring
+
+In a separate terminal, from the project root, run:
+
+```bash
+docker compose up -d prometheus grafana
+```
+
+Open Prometheus Targets:
+
+`http://localhost:9093/targets`
+
+Verify that `legal-rag-bentoml` is `UP`.
+
+Open Grafana:
+
+`http://localhost:3003`
+
+Select the configured Prometheus data source and open the saved **Arabic Legal RAG - Monitoring** dashboard.
+
+The BentoML service must be running on port `3002` for Prometheus to collect its metrics.
+
+### Step 11 — Run tests
 
 ```bash
 uv run pytest
@@ -501,14 +543,14 @@ Evaluation scripts support configurable experiment settings, including the model
 
 ### What the metrics mean
 
-| Metric              | Purpose                                                                   |
-| ------------------- | ------------------------------------------------------------------------- |
-| Faithfulness        | Measures whether the answer is supported by the retrieved context.        |
-| Answer Relevancy    | Measures how relevant the answer is to the question.                      |
-| Context Precision   | Measures how relevant the retrieved context is.                           |
-| Context Recall      | Measures how much of the required reference information is captured.      |
-| Article Recall@5    | Measures whether the relevant article appears among the top five results. |
-| Article Precision@5 | Measures the proportion of the top five results considered relevant.      |
+| Metric | Purpose |
+|---|---|
+| Faithfulness | Measures whether the answer is supported by the retrieved context. |
+| Answer Relevancy | Measures how relevant the answer is to the question. |
+| Context Precision | Measures how relevant the retrieved context is. |
+| Context Recall | Measures how much of the required reference information is captured. |
+| Article Recall@5 | Measures whether the relevant article appears among the top five results. |
+| Article Precision@5 | Measures the proportion of the top five results considered relevant. |
 
 Metric values are meaningful only in relation to the evaluation dataset, references, and experiment configuration used to calculate them.
 
@@ -516,21 +558,21 @@ Metric values are meaningful only in relation to the evaluation dataset, referen
 
 The following results are the experiment values recorded during development. The runs used different sample sizes and should not be interpreted as a controlled, same-dataset comparison.
 
-| Experiment          | Questions | Faithfulness | Answer Relevancy | Context Precision | Context Recall | Article Recall@5 | Article Precision@5 |
-| ------------------- | --------: | -----------: | ---------------: | ----------------: | -------------: | ---------------: | ------------------: |
-| Successful baseline |        20 |       0.3067 |           0.0456 |            0.8857 |         1.0000 |           1.0000 |              0.2000 |
-| Prompt 3            |         5 |       0.4667 |           0.5736 |           ≈1.0000 |         1.0000 |           1.0000 |              0.2000 |
-| Prompt 4            |         5 |       0.5500 |           0.8941 |           ≈1.0000 |         1.0000 |           1.0000 |              0.2000 |
-| Updated prompt      |         5 |       0.8500 |           0.9356 |            1.0000 |         1.0000 |           1.0000 |              0.2000 |
+| Experiment | Questions | Faithfulness | Answer Relevancy | Context Precision | Context Recall | Article Recall@5 | Article Precision@5 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Successful baseline | 20 | 0.3067 | 0.0456 | 0.8857 | 1.0000 | 1.0000 | 0.2000 |
+| Prompt 3 | 5 | 0.4667 | 0.5736 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
+| Prompt 4 | 5 | 0.5500 | 0.8941 | ≈1.0000 | 1.0000 | 1.0000 | 0.2000 |
+| Updated prompt | 5 | 0.8500 | 0.9356 | 1.0000 | 1.0000 | 1.0000 | 0.2000 |
 
 A later five-question run recorded the following per-sample metrics:
 
-| Metric                   | Recorded value |
-| ------------------------ | -------------: |
-| Sample Faithfulness      |         1.0000 |
-| Sample Answer Relevancy  |         0.8368 |
-| Sample Context Precision |        ≈1.0000 |
-| Sample Context Recall    |         1.0000 |
+| Metric | Recorded value |
+|---|---:|
+| Sample Faithfulness | 1.0000 |
+| Sample Answer Relevancy | 0.8368 |
+| Sample Context Precision | ≈1.0000 |
+| Sample Context Recall | 1.0000 |
 
 All four RAGAS metrics were valid for all five questions in that run, with zero failed evaluations.
 
@@ -552,14 +594,16 @@ legal-rag_a5
 
 Tracking responsibilities:
 
-| Tool     | Responsibility                                               |
-| -------- | ------------------------------------------------------------ |
-| Git      | Source code and version history                              |
-| DVC      | Source PDF, derived datasets, and reproducible data pipeline |
-| MLflow   | Experiment parameters, metrics, and artifacts                |
-| DagsHub  | Remote DVC storage and MLflow experiment tracking            |
-| RAGAS    | RAG quality evaluation                                       |
-| Langfuse | Request-level tracing and prompt/LLM observability           |
+| Tool | Responsibility |
+|---|---|
+| Git | Source code and version history |
+| DVC | Source PDF, derived datasets, and reproducible data pipeline |
+| MLflow | Experiment parameters, metrics, and artifacts |
+| DagsHub | Remote DVC storage and MLflow experiment tracking |
+| RAGAS | RAG quality evaluation |
+| Langfuse | Request-level tracing and prompt/LLM observability |
+| Prometheus | Service metrics collection |
+| Grafana | Monitoring dashboards and visualization |
 
 ### Configuration
 
@@ -631,7 +675,150 @@ The response includes the question, generated answer, and sources.
 
 This is a locally hosted development service, not a public deployment URL.
 
-## 17. Locust Load Testing
+## 17. Monitoring and Observability
+
+The project uses **Prometheus** and **Grafana** to monitor the locally hosted BentoML service.
+
+### Monitoring Architecture
+
+```text
+BentoML RAG Service
+   localhost:3002
+         |
+         | /metrics
+         v
+    Prometheus
+   localhost:9093
+         |
+         v
+      Grafana
+   localhost:3003
+```
+
+* **BentoML:** Serves the RAG API and exposes service metrics.
+* **Prometheus:** Scrapes metrics from BentoML at 15-second intervals.
+* **Grafana:** Visualizes request counts, error counts, request rate, and latency when the corresponding metrics are available.
+
+### Local Monitoring URLs
+
+| Service | URL |
+|---|---|
+| BentoML API | http://localhost:3002 |
+| BentoML metrics | http://localhost:3002/metrics |
+| Prometheus | http://localhost:9093 |
+| Prometheus Targets | http://localhost:9093/targets |
+| Grafana | http://localhost:3003 |
+
+These URLs are for local development. They are not public links that remote reviewers can access directly.
+
+### Prometheus Configuration
+
+The scrape configuration is stored in:
+
+```text
+monitoring/prometheus.yml
+```
+
+The BentoML target is configured as:
+
+```yaml
+- job_name: "legal-rag-bentoml"
+  metrics_path: /metrics
+  static_configs:
+    - targets: ["host.docker.internal:3002"]
+```
+
+Prometheus uses `host.docker.internal` to reach the BentoML service running on the host machine from inside its Docker container.
+
+### Grafana Dashboard
+
+The saved dashboard is named:
+
+`Arabic Legal RAG - Monitoring`
+
+The dashboard includes the following panels:
+
+| Panel | Purpose |
+|---|---|
+| Successful Requests | Displays successful `/ask` requests with HTTP 200 responses. |
+| Failed Requests | Displays requests that returned HTTP 5xx responses. |
+| Request Rate | Displays the request rate over a five-minute window. |
+| Average Request Latency | Displays average request duration when the required duration metrics are exposed. |
+
+The request counter used in the dashboard is:
+
+```promql
+bentoml_service_request_total
+```
+
+Example query for successful requests:
+
+```promql
+sum(bentoml_service_request_total{endpoint="/ask",http_response_code="200"})
+```
+
+Example query for server errors:
+
+```promql
+sum(bentoml_service_request_total{endpoint="/ask",http_response_code=~"5.."})
+```
+
+Example query for request rate:
+
+```promql
+sum(rate(bentoml_service_request_total{endpoint="/ask"}[5m]))
+```
+
+### Verification
+
+The monitoring setup was tested locally by sending requests to `/ask` and checking the metrics in Grafana.
+
+The following results were observed during testing:
+
+* The `legal-rag-bentoml` Prometheus target was `UP`.
+* `bentoml_service_request_total` reported one successful HTTP 200 request after a test request.
+* The HTTP 500 counter remained at zero at that point.
+
+These values represent the test session, not permanent or production-wide statistics. Request counters may reset when the service restarts.
+
+### Start Monitoring
+
+From the project root, run:
+
+```bash
+docker compose up -d prometheus grafana
+```
+
+Ensure that BentoML is running on port `3002`. Open Prometheus Targets and verify that `legal-rag-bentoml` is `UP`.
+
+Then open Grafana, select the configured Prometheus data source, and open the saved dashboard.
+
+For a reproducible review, send several test questions through the BentoML `/ask` API, refresh the dashboard, and inspect the request counters and rate.
+
+### Dashboard Screenshot
+
+To include a dashboard screenshot in the GitHub README, save the image at:
+
+```text
+docs/images/legal-rag-dashboard.png
+```
+
+Then the following Markdown can be used:
+
+```markdown
+![Arabic Legal RAG Monitoring Dashboard](docs/images/legal-rag-dashboard.png)
+```
+
+Add the image only after saving the actual screenshot at that path. The local Grafana URL itself is not accessible to remote reviewers.
+
+### Current Limitations
+
+* The current setup is local monitoring, not a publicly deployed monitoring service.
+* Latency visualization depends on the duration metrics exposed by the running BentoML version.
+* Request and service metrics do not replace RAGAS quality evaluation or Langfuse request tracing.
+* Production alerting, deployment-wide monitoring, and retrieval-quality drift monitoring remain future work.
+
+## 18. Locust Load Testing
 
 An initial Locust test was performed against the locally hosted BentoML RAG API.
 
@@ -645,16 +832,16 @@ An initial Locust test was performed against the locally hosted BentoML RAG API.
 
 ### Initial results
 
-| Metric                |         Result |
-| --------------------- | -------------: |
-| Total Requests        |              7 |
-| Failed Requests       |              0 |
-| Median Response Time  |     108,000 ms |
-| Average Response Time |   99,630.56 ms |
-| 95th Percentile (P95) |     151,000 ms |
-| 99th Percentile (P99) |     151,000 ms |
-| Minimum Response Time |      28,048 ms |
-| Maximum Response Time |     150,746 ms |
+| Metric | Result |
+|---|---:|
+| Total Requests | 7 |
+| Failed Requests | 0 |
+| Median Response Time | 108,000 ms |
+| Average Response Time | 99,630.56 ms |
+| 95th Percentile (P95) | 151,000 ms |
+| 99th Percentile (P99) | 151,000 ms |
+| Minimum Response Time | 28,048 ms |
+| Maximum Response Time | 150,746 ms |
 | Average Response Size | 1,985.71 bytes |
 
 ### Observations
@@ -666,7 +853,7 @@ An initial Locust test was performed against the locally hosted BentoML RAG API.
 
 These results should not be interpreted as production capacity or a final performance benchmark.
 
-## 18. Tests
+## 19. Tests
 
 The test suite is located under:
 
@@ -694,7 +881,7 @@ For CI, the workflow installs dependencies, prepares the test database, initiali
 
 The Docker job builds and publishes the image after the test job succeeds, except that pull-request builds do not push the image.
 
-## 19. CI/CD and Docker Image Publishing
+## 20. CI/CD and Docker Image Publishing
 
 The GitHub Actions workflow is located under:
 
@@ -737,7 +924,7 @@ Docker Hub publication requires the workflow's image metadata to include that re
 
 A successful image build does not, by itself, prove that the complete application can run on a clean machine with PostgreSQL, the dataset, and Ollama.
 
-## 20. Planned Production Architecture
+## 21. Planned Production Architecture
 
 The intended production architecture is:
 
@@ -770,7 +957,7 @@ Future serving and deployment work includes:
 * vLLM inference serving.
 * Generative model optimization.
 * Docker Compose deployment of the required services.
-* Request latency and error monitoring.
+* Production alerting and monitoring.
 * Retrieval and embedding drift monitoring.
 * Ongoing RAGAS quality evaluation.
 * Token-cost monitoring.
@@ -781,7 +968,7 @@ The current development environment is Windows and CPU-only. vLLM is planned for
 
 The local RAG workflow uses Ollama for generation. A production vLLM deployment should use a compatible Linux environment and suitable GPU resources for the selected model.
 
-## 21. Reproducibility
+## 22. Reproducibility
 
 The project's reproducibility approach separates responsibilities:
 
@@ -791,6 +978,8 @@ DVC       -> Dataset versioning and preprocessing pipeline
 MLflow    -> Experiment parameters, metrics, and artifacts
 RAGAS     -> RAG quality evaluation
 Langfuse  -> Request tracing
+Prometheus-> Service metrics collection
+Grafana   -> Monitoring dashboards
 Docker    -> Container packaging
 BentoML   -> RAG service serving
 Ollama    -> Current local generation
@@ -799,7 +988,7 @@ vLLM      -> Planned production inference
 
 To reproduce an experiment, record the code revision, DVC dataset version, model configuration, prompt, retrieval parameters, and evaluation results.
 
-## 22. Roadmap
+## 23. Roadmap
 
 ### Phase 1 — Data and reproducibility
 
@@ -838,13 +1027,15 @@ To reproduce an experiment, record the code revision, DVC dataset version, model
 
 * [x] Langfuse tracing integration.
 * [x] Docker image build workflow.
+* [x] Local Prometheus metrics collection.
+* [x] Grafana dashboard for BentoML request monitoring.
 * [ ] Verify clean-machine Docker deployment.
 * [ ] Complete service and database orchestration.
-* [ ] Request, latency, and error monitoring.
+* [ ] Production alerting and monitoring.
 * [ ] Retrieval drift and ongoing RAGAS monitoring.
 * [ ] Token-cost monitoring.
 
-## 23. License and Disclaimer
+## 24. License and Disclaimer
 
 This project is developed for educational and MLOps/RAG engineering purposes.
 
