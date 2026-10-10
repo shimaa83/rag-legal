@@ -454,6 +454,12 @@ Prometheus and Grafana provide the monitoring foundation. Prometheus configurati
 
 Further observability goals include token-usage metrics, cost estimates, latency and error dashboards, and alerts when faithfulness falls below 0.80.
 
+<img width="1874" height="968" alt="Screenshot 2026-10-10 180821" src="https://github.com/user-attachments/assets/83769d94-03fe-4e68-967f-d92a07859654" />
+
+- **Grafana dashboards:** Visualize Prometheus metrics to monitor API performance, request rates, errors, and latency at `http://localhost:3003/`.
+
+  <img width="1906" height="961" alt="Screenshot 2026-10-10 145951" src="https://github.com/user-attachments/assets/84ca32f4-ff69-4478-93c3-429762792502" />
+
 ## 15. CI/CD with GitHub Actions
 
 The GitHub Actions workflow runs on pushes to `main` and `legal-v1`, as well as pull requests.
