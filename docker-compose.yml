@@ -1,49 +1,41 @@
 
 services:
   postgres:
-    image: ghcr.io/shimaa83/rag-legal-db:${IMAGE_TAG:-legal-v1}
-    build:
-      context: .
-      dockerfile: Dockerfile.db
+    image: pgvector/pgvector:pg18-trixie
     container_name: legal-rag-postgres
     restart: unless-stopped
     environment:
       POSTGRES_DB: legal_rag
       POSTGRES_USER: rag_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_PASSWORD: rag_password
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U rag_user -d legal_rag"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
-  api:
-    image: ghcr.io/shimaa83/rag-legal-api:${IMAGE_TAG:-legal-v1}
-    build:
-      context: .
-      dockerfile: Dockerfile.api
-    container_name: legal-rag-api
+  redis:
+    image: redis:7-alpine
+    container_name: legal-rag-redis
     restart: unless-stopped
     environment:
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: "5432"
-      POSTGRES_DB: legal_rag
-      POSTGRES_USER: rag_user
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
-      OLLAMA_URL: http://host.docker.internal:11434/api/chat
-      GENERATOR_MODEL: ${GENERATOR_MODEL:-qwen2.5:3b}
-      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --requirepass
+      - ${REDIS_PASSWORD:?Set REDIS_PASSWORD in .env}
     ports:
-      - "8000:8000"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      postgres:
-        condition: service_healthy
+      - "127.0.0.1:6380:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - 'redis-cli -a "$$REDIS_PASSWORD" ping | grep -q PONG'
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
   prometheus:
     image: prom/prometheus:latest
@@ -56,8 +48,9 @@ services:
       - prometheus_data:/prometheus
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    depends_on:
-      - api
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
 
   grafana:
     image: grafana/grafana:latest
@@ -72,5 +65,6 @@ services:
 
 volumes:
   postgres_data:
+  redis_data:
   prometheus_data:
   grafana_data:

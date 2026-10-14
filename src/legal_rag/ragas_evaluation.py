@@ -37,6 +37,7 @@ from legal_rag.config import (
     CANDIDATE_K,
     DAGSHUB_REPO_NAME,
     DAGSHUB_REPO_OWNER,
+    ENABLE_VERIFICATION,
     GENERATOR_MODEL,
     JUDGE_BASE_MODEL,
     JUDGE_NUM_CTX,
@@ -48,9 +49,21 @@ from legal_rag.config import (
     PROMPT_TEMPLATE,
     TOP_K,
     USE_DAGSHUB,
+    VERIFICATION_PROMPT_TEMPLATE,
+    VERIFIER_MODEL,
 )
 from legal_rag.mlflow_tracking import get_dvc_data_hash, get_git_commit
-from legal_rag.rag import ask
+from legal_rag.rag import ask, get_article_text, warm_up
+
+_ARABIC_DIGIT_MAP = str.maketrans(legal_config.ARABIC_DIGITS, legal_config.ENGLISH_DIGITS)
+
+
+def to_article_int(value) -> int | None:
+    """'٥٠', '50', 50 -> 50 (so retrieved and expected articles can match)."""
+    try:
+        return int(str(value).strip().translate(_ARABIC_DIGIT_MAP))
+    except (TypeError, ValueError):
+        return None
 
 # ============================================================
 # Configuration (all main settings live in legal_rag/config.py)
@@ -58,6 +71,16 @@ from legal_rag.rag import ask
 
 MODEL_SLUG = re.sub(r"[^A-Za-z0-9_.-]+", "-", GENERATOR_MODEL)
 PROMPT_HASH = hashlib.sha256(PROMPT_TEMPLATE.encode("utf-8")).hexdigest()[:8]
+
+# The verification step changes the final answers, so it must be part of the
+# run identity (otherwise cached samples from a different setup get reused).
+if ENABLE_VERIFICATION:
+    _verify_hash = hashlib.sha256(
+        (VERIFICATION_PROMPT_TEMPLATE + VERIFIER_MODEL).encode("utf-8")
+    ).hexdigest()[:8]
+    VERIFY_TAG = f"v{_verify_hash}"
+else:
+    VERIFY_TAG = "noverify"
 
 if JUDGE_PROVIDER == "ollama":
     JUDGE_MODEL = f"{JUDGE_BASE_MODEL.replace(':', '-')}-ctx{JUDGE_NUM_CTX // 1024}k"
@@ -92,7 +115,7 @@ METRIC_NAMES = list(METRIC_INPUTS)
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 EVAL_DIR = PROJECT_ROOT / "data" / "evaluation"
-RUN_DIR = EVAL_DIR / "runs" / MODEL_SLUG / f"k{TOP_K}_p{PROMPT_HASH}"
+RUN_DIR = EVAL_DIR / "runs" / MODEL_SLUG / f"k{TOP_K}_p{PROMPT_HASH}_{VERIFY_TAG}"
 
 DATASET_PATH = EVAL_DIR / "ragas_dataset.json"
 RESULTS_PATH = RUN_DIR / "ragas_results.json"
@@ -182,7 +205,9 @@ def ensure_judge_model() -> None:
 
 def article_overlap(relevant: list[int], retrieved: list[int], divide_by: str) -> float:
     """Share of overlapping articles, divided by 'relevant' (recall) or 'retrieved' (precision)."""
-    relevant_set, retrieved_set = set(relevant), set(retrieved)
+    # Normalize both sides: "٥٠" vs 50 vs "50" used to count as a miss.
+    relevant_set = {n for n in map(to_article_int, relevant) if n is not None}
+    retrieved_set = {n for n in map(to_article_int, retrieved) if n is not None}
     base = relevant_set if divide_by == "relevant" else retrieved_set
     return len(relevant_set & retrieved_set) / len(base) if base else 0.0
 
@@ -191,12 +216,20 @@ def article_overlap(relevant: list[int], retrieved: list[int], divide_by: str) -
 # Run the RAG system
 # ============================================================
 
-def build_ragas_dataset(records: list[dict]) -> tuple[list[dict], list[dict]]:
+def build_ragas_dataset(
+    records: list[dict], use_cache: bool = False
+) -> tuple[list[dict], list[dict]]:
     """Run the RAG system for every evaluation question."""
     samples, details = [], []
 
+    # Load models once so the first question's timing is not inflated.
+    warm_up()
+
     print("\n" + "=" * 70)
-    print(f"Running RAG on evaluation dataset | generator = {GENERATOR_MODEL}")
+    print(
+        f"Running RAG on evaluation dataset | generator = {GENERATOR_MODEL} | "
+        f"verification = {VERIFIER_MODEL if ENABLE_VERIFICATION else 'off'}"
+    )
     print("=" * 70)
 
     for index, record in enumerate(records, start=1):
@@ -212,13 +245,18 @@ def build_ragas_dataset(records: list[dict]) -> tuple[list[dict], list[dict]]:
             candidate_k=CANDIDATE_K,
             model=GENERATOR_MODEL,
             prompt_template=PROMPT_TEMPLATE,
+            verify=ENABLE_VERIFICATION,
+            # Evaluate the real pipeline, not answers stored in Redis.
+            use_cache=use_cache,
         )
 
         contexts = [
-            f"المادة {r['article_number']}\n{r['text_ar_normalized']}\nالمصدر: {r['citation']}"
+            f"المادة {r.get('article_number', 'غير محدد')}\n"
+            f"{get_article_text(r)}\n"
+            f"المصدر: {r.get('citation', '')}"
             for r in rag["retrieved_results"]
         ]
-        retrieved = [r["article_number"] for r in rag["retrieved_results"]]
+        retrieved = [r.get("article_number") for r in rag["retrieved_results"]]
 
         recall = article_overlap(relevant, retrieved, "relevant")
         precision = article_overlap(relevant, retrieved, "retrieved")
@@ -228,6 +266,8 @@ def build_ragas_dataset(records: list[dict]) -> tuple[list[dict], list[dict]]:
                 "question": question,
                 "reference": reference,
                 "response": rag["answer"],
+                "verified": rag.get("verified"),
+                "timings": rag.get("timings", {}),
                 "relevant_articles": relevant,
                 "retrieved_articles": retrieved,
                 "retrieved_contexts": contexts,
@@ -440,6 +480,8 @@ def parse_args() -> argparse.Namespace:
                         help="Evaluate only the first N questions (overrides NUM_QUESTIONS).")
     parser.add_argument("--reuse-samples", action="store_true",
                         help="Skip running the RAG and reuse cached answers/contexts.")
+    parser.add_argument("--use-cache", action="store_true",
+                        help="Allow Redis cached answers (off by default for honest metrics).")
     parser.add_argument("--run-name", default=None,
                         help="MLflow run name (overrides MLFLOW_RUN_NAME).")
     return parser.parse_args()
@@ -461,8 +503,12 @@ def main() -> None:
         records = records[:limit]
     num_questions = len(records)
 
+    if num_questions == 0:
+        raise SystemExit(f"No evaluation questions found in {DATASET_PATH}")
+
     print(f"Loaded {num_questions} evaluation questions.")
     print(f"Generator: {GENERATOR_MODEL} | Judge: {JUDGE_MODEL} ({JUDGE_PROVIDER})")
+    print(f"Verification: {VERIFIER_MODEL if ENABLE_VERIFICATION else 'off'}")
 
     if JUDGE_PROVIDER == "ollama":
         ensure_judge_model()
@@ -470,7 +516,7 @@ def main() -> None:
     run_name = (
         args.run_name
         or MLFLOW_RUN_NAME
-        or f"ragas-{MODEL_SLUG}-k{TOP_K}-{num_questions}q-p{PROMPT_HASH}"
+        or f"ragas-{MODEL_SLUG}-k{TOP_K}-{num_questions}q-p{PROMPT_HASH}-{VERIFY_TAG}"
     )
 
     with mlflow.start_run(run_name=run_name):
@@ -487,17 +533,23 @@ def main() -> None:
                 "evaluation_dataset_size": str(num_questions),
                 "sweep_id": os.getenv("SWEEP_ID", ""),
                 "prompt_hash": PROMPT_HASH,
+                "verification": VERIFY_TAG,
             }
         )
 
-        # The prompt itself + the config used for this run
+        # The prompts themselves + the config used for this run
         mlflow.log_text(PROMPT_TEMPLATE, "prompt/prompt_template.txt")
+        mlflow.log_text(
+            VERIFICATION_PROMPT_TEMPLATE, "prompt/verification_prompt_template.txt"
+        )
         mlflow.log_artifact(legal_config.__file__, artifact_path="config")
 
         run_config = {
             "top_k": TOP_K,
             "candidate_k": CANDIDATE_K,
             "generator_model": GENERATOR_MODEL,
+            "verification_enabled": ENABLE_VERIFICATION,
+            "verifier_model": VERIFIER_MODEL if ENABLE_VERIFICATION else "none",
             "judge_provider": JUDGE_PROVIDER,
             "judge_model": JUDGE_MODEL,
             "embedding_model": EMBEDDING_MODEL,
@@ -525,7 +577,7 @@ def main() -> None:
         else:
             if args.reuse_samples:
                 print(f"[!] No cache found in {RUN_DIR}; running the RAG instead.")
-            samples, details = build_ragas_dataset(records)
+            samples, details = build_ragas_dataset(records, use_cache=args.use_cache)
             save_json(SAMPLES_CACHE_PATH, samples)
             save_json(DETAILS_CACHE_PATH, details)
 
@@ -548,6 +600,10 @@ def main() -> None:
             | {f"{n}_failed_count": failed_counts[n] for n in METRIC_NAMES}
         )
         mlflow.log_metrics(retrieval_metrics)
+
+        if ENABLE_VERIFICATION:
+            verified_ok = sum(1 for d in details if d.get("verified") is True)
+            mlflow.log_metric("verification_completed_rate", verified_ok / len(details))
 
         for name in METRIC_NAMES:
             if name not in scores:
