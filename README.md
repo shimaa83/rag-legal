@@ -581,6 +581,15 @@ Store reproducible evaluation outputs, Locust reports, MLflow experiment screens
 The long-term goal is to build a reproducible, observable, and evaluable Arabic legal RAG system that combines versioned data, hybrid retrieval, grounded generation, experiment tracking, automated quality checks, and containerized deployment.
 
 The project distinguishes measured results from future targets so that improvements can be validated through repeatable experiments.
+## 22.Project Demo
+
+
+
+
+
+
+https://github.com/user-attachments/assets/fc23e43f-3780-441d-88d3-909d166efa1c
+
 
 ## License
 
