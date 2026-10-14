@@ -11,7 +11,7 @@ The application uses prebuilt Docker images published on Docker Hub.
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Git](https://git-scm.com/downloads)
 - [Ollama](https://ollama.com/download)
-- [gimini api key]([https://ollama.com/download](https://aistudio.google.com/app/api-keys))
+- [gimini api key](https://aistudio.google.com/app/api-keys))
 
 ### Step 1 — Clone the repository
 
