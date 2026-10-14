@@ -11,6 +11,7 @@ The application uses prebuilt Docker images published on Docker Hub.
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - [Git](https://git-scm.com/downloads)
 - [Ollama](https://ollama.com/download)
+- [gimini api key]([https://ollama.com/download](https://aistudio.google.com/app/api-keys))
 
 ### Step 1 — Clone the repository
 
@@ -27,6 +28,7 @@ Create a `.env` file in the project root:
 ```dotenv
 POSTGRES_PASSWORD=choose_a_secure_password
 GENERATOR_MODEL=qwen2.5:3b
+GEMINI_API_KEY=
 ```
 
 Install and download the local generation model:
@@ -279,6 +281,9 @@ Recorded components include:
 - **Embedding model:** `intfloat/multilingual-e5-small`
 - **Reranker:** `Horizon-Labs/multilingual-reranker-small`
 - **Generator:** `qwen2.5:3b` through Ollama
+- **Verfier:** `gimini 3.5 flash` through API key
+- **Judge:** `gimini 3.5 flash` through API key
+
 
 The generation prompt is designed to constrain answers to the retrieved legal context, reduce unsupported claims, and return relevant article citations.
 
@@ -294,7 +299,7 @@ Request:
 
 ```json
 {
-  "question": "ما هو سن الرشد في القانون المدني المصري؟"
+  "question": "ما هى شروط بطلان العقد؟"
 }
 ```
 
