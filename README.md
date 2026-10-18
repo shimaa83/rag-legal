@@ -1,78 +1,11 @@
-# Arabic Legal RAG — Egyptian Civil Code
+# Arabic Legal RAG — Egyptian Civil Code v2
 
 An MLOps-oriented Retrieval-Augmented Generation (RAG) system for the Egyptian Civil Code, focusing on Arabic legal text processing, hybrid retrieval, reproducible data pipelines, experiment tracking, evaluation, and containerized deployment.
+- in this version redis for cashing is add and ui with gradio
 
-## 1. Quick Start — Run with Docker Hub
 
-The application uses prebuilt Docker images published on Docker Hub.
 
-### Prerequisites
 
-- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-- [Git](https://git-scm.com/downloads)
-- [Ollama](https://ollama.com/download)
-
-### Step 1 — Clone the repository
-
-```powershell
-git clone https://github.com/shimaa83/rag-legal.git
-cd rag-legal
-git checkout legal-v1
-```
-
-### Step 2 — Configure the environment
-
-Create a `.env` file in the project root:
-
-```dotenv
-POSTGRES_PASSWORD=choose_a_secure_password
-GENERATOR_MODEL=qwen2.5:3b
-```
-
-Install and download the local generation model:
-
-```powershell
-ollama pull qwen2.5:3b
-```
-
-Ensure Ollama is running and accessible from the API container at `http://host.docker.internal:11434`.
-
-### Step 3 — Pull and run
-
-The Docker Compose file must reference the published Docker Hub images:
-
-```yaml
-services:
-  postgres:
-    image: shimaa83/legal-rag-db:latest
-
-  api:
-    image: shimaa83/legal-rag-api:latest
-```
-
-Keep the complete service configuration, including ports, database environment variables, health checks, volumes, and dependencies.
-
-Pull the images and start the application:
-
-```powershell
-docker compose pull
-docker compose up -d
-docker compose ps
-```
-
-Access the services:
-
-- **FastAPI documentation:** http://localhost:8000/docs
-- **Prometheus:** http://localhost:9093
-- **Grafana:** http://localhost:3003
-
-The API depends on the PostgreSQL database and the locally running Ollama model.
-
-To stop the application:
-
-```powershell
-docker compose down
-```
 
 ## 2. Final Architecture Diagram
 
