@@ -590,7 +590,7 @@ The project distinguishes measured results from future targets so that improveme
 
 https://github.com/user-attachments/assets/fc23e43f-3780-441d-88d3-909d166efa1c
 
-
+- This demo is from rag-legal v2 after adding radis for cash and ui with gradio 
 ## License
 
 Add the applicable license and source-document attribution according to the project's distribution requirements.
